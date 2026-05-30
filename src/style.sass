@@ -1,0 +1,4259 @@
+@import url("https://fonts.googleapis.com/css2?family=Libre+Barcode+128&family=VT323&display=swap")
+
+@font-face
+  font-family: "Cubic11"
+  src: url("https://cdn.jsdelivr.net/gh/ACh-K/Cubic-11@main/fonts/web/Cubic_11.woff2") format("woff2")
+  font-weight: normal
+  font-style: normal
+  font-display: swap
+
+$color-dark: #4f6848
+$color-light: #99b489
+$color-accent: #e0ca7d
+$color-bg: #f8f6cc
+$gw-ink: #10251f
+$gw-mint: #8bd3c7
+$gw-green: #7cce56
+$gw-teal: #00aaa2
+$gw-cream: #fff8dc
+$gw-yellow: #edc96d
+$gw-red: #d63031
+$gw-darkgreen: #07110c
+
+=gw-pixel-card($bg: #fff8dc, $border: #10251f, $shadow: #10251f)
+  background: $bg
+  border: 4px solid $border
+  box-shadow: 8px 8px 0 $shadow
+  border-radius: 18px
+
+=gw-pixel-button($bg: #00aaa2, $color: #fff)
+  background: $bg
+  color: $color
+  border: 4px solid $gw-ink
+  box-shadow: 5px 5px 0 $gw-ink
+  font-weight: 900
+  cursor: pointer
+  transition: transform 0.15s ease, box-shadow 0.15s ease
+
+  &:hover
+    transform: translateY(-3px)
+    box-shadow: 7px 7px 0 $gw-ink
+
+  &:active
+    transform: translateY(1px)
+    box-shadow: 3px 3px 0 $gw-ink
+
+=gw-grid-bg($line: rgba(16, 37, 31, 0.08), $size: 32px)
+  background-image: linear-gradient($line 1px, transparent 1px), linear-gradient(90deg, $line 1px, transparent 1px)
+  background-size: $size $size
+
+.section-eyebrow
+  display: inline-block
+  background: $gw-ink
+  color: #00ff7f
+  padding: 6px 10px
+  font-family: "Courier New", monospace
+  font-size: 13px
+  font-weight: 900
+  letter-spacing: 1px
+  border: 3px solid #000
+  box-shadow: 4px 4px 0 #000
+
+.section-title-display
+  font-size: clamp(36px, 6vw, 72px)
+  line-height: 1
+  font-weight: 1000
+  color: $gw-ink
+  letter-spacing: -2px
+
+.section-subtitle-display
+  max-width: 760px
+  font-size: 20px
+  line-height: 1.7
+  color: rgba(16, 37, 31, 0.82)
+  font-weight: 800
+
+*
+  box-sizing: border-box
+  font-family: "PingFang TC", "Heiti TC", "Noto Sans TC", "微軟正黑體", sans-serif
+
+body, html
+  margin: 0
+  padding: 0
+  overflow-x: hidden
+  width: 100%
+  background-color: $color-bg
+
+@keyframes marquee
+  0%
+    transform: translate(0, -50%)
+  100%
+    transform: translate(-50%, -50%)
+
+@keyframes blink
+  0%, 100%
+    opacity: 1
+  50%
+    opacity: 0.3
+
+@keyframes barLoading
+  0%
+    content: "[████████░░] 80%"
+  30%
+    content: "[█████████░] 90%"
+  60%
+    content: "[██████████] 100%"
+  100%
+    content: "[ COMPLETE ]"
+
+@keyframes fadeOutReport
+  0%
+    opacity: 1
+    transform: translateX(-50%) scale(1)
+  90%
+    opacity: 1
+    transform: translateX(-50%) scale(1)
+  100%
+    opacity: 0
+    transform: translateX(-50%) scale(0.95)
+    visibility: hidden
+
+@keyframes fadeInResults
+  0%
+    visibility: visible
+    opacity: 0
+    transform: scale(0.95)
+  100%
+    visibility: visible
+    opacity: 1
+    transform: scale(1)
+
+.home
+  background: radial-gradient(circle at 20% 20%, #b8f7a8 0, transparent 28%), linear-gradient(135deg, #7cce56 0%, #00aaa2 100%)
+  +gw-grid-bg(rgba(16, 37, 31, 0.08), 30px)
+  position: relative
+  overflow: hidden
+  height: 100vh
+  width: 100%
+  display: flex
+  align-items: center
+  justify-content: center
+  z-index: 1
+
+  &::before
+    content: ""
+    position: absolute
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")
+    opacity: 0.08
+    contrast: 150%
+    brightness: 100%
+    pointer-events: none
+    z-index: 1
+
+  .marquee-wrapper
+    display: flex
+    position: absolute
+    top: 50%
+    left: 0
+    white-space: nowrap
+    z-index: 2
+    animation: marquee 15s linear infinite
+    width: max-content
+    opacity: 0.75
+
+    h1
+      font-size: 20vw
+      line-height: 1
+      font-weight: 900
+      color: rgba(27, 153, 139, 0.8)
+      -webkit-text-stroke: 2px rgba(16, 37, 31, 0.08)
+      mix-blend-mode: normal
+      mix-blend-mode: overlay
+      text-transform: uppercase
+      letter-spacing: -2px
+      margin: 0
+      padding-right: 100px
+      pointer-events: none
+
+  .container
+    position: relative
+    width: 100%
+    height: 100%
+    z-index: 5
+
+  .truth-layer,
+  .cover-layer
+    position: absolute
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+
+  .truth-layer
+    z-index: 4
+    clip-path: circle(0px at 0px 0px)
+    p
+      display: inline-block
+      background: #ffd8d8
+      border: 4px solid $gw-red
+      box-shadow: 7px 7px 0 $gw-ink
+      color: $gw-red !important
+      font-size: clamp(22px, 3.6vw, 48px)
+      line-height: 1.2
+      margin: 10px 0
+
+  .cover-layer
+    z-index: 3
+    color: white
+
+    p
+      display: inline-block
+      background: rgba(255, 248, 220, 0.92)
+      border: 4px solid $gw-ink
+      box-shadow: 7px 7px 0 $gw-ink
+      color: $gw-ink
+      font-size: clamp(24px, 4.2vw, 58px)
+      line-height: 1.1
+      margin: 10px 0
+      transform: rotate(-1deg)
+
+      &:nth-child(even)
+        transform: rotate(1deg)
+        background: #ffffff
+
+.magnifier
+  filter: drop-shadow(8px 8px 0 rgba(16, 37, 31, 0.45))
+  position: absolute
+  width: 300px
+  height: 300px
+  pointer-events: none
+  z-index: 10
+  transform: translate(-50%, -50%)
+  display: none
+
+#section_intro
+  position: relative
+  z-index: 20
+  padding: 80px 0
+  min-height: 100vh
+  background-color: #008080
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1)
+  overflow: hidden
+
+  &::before
+    content: ""
+    position: absolute
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    background-image: url("https://raw.githubusercontent.com/ChewyChloe/web_design/main/img/merchandise-removebg.png")
+    background-repeat: repeat
+    background-size: 120%
+    opacity: 0.13
+    z-index: -1
+
+  .container
+    position: relative
+    z-index: 10
+    max-width: 900px
+    margin: 0 auto
+    text-align: center
+    background: #c0c0c0
+    width: 90%
+    padding: 3px
+    border: 4px solid $gw-ink
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3)
+
+    .window-title-bar
+      background: $gw-ink
+      padding: 8px 10px
+      display: flex
+      justify-content: space-between
+      align-items: center
+
+      span
+        color: #00ff7f
+        font-weight: bold
+        font-family: "Courier New", monospace
+        font-size: 14px
+
+      .window-controls
+        display: flex
+        gap: 2px
+
+        button
+          width: 16px
+          height: 14px
+          font-size: 10px
+          padding: 0
+
+    .window-body
+      margin: 4px
+      padding: 30px
+      background-color: #fff
+      border: 4px solid #808080
+      text-align: left
+
+      h1
+        color: $color-dark
+        font-weight: 900
+        line-height: 1.2
+
+      h2
+        background-color: #f0f0f0
+        border: 1px inset #fff
+        padding: 20px
+        margin-top: 20px
+
+      h4
+        padding: 5px
+        line-height: 1.5
+
+      h6
+        margin-top: 10px
+        padding: 10px
+        background-color: black
+        width: fit-content
+        color: #00ff00
+        font-style: oblique
+        font-family: monospace
+
+  .clippy-group
+    position: absolute
+    bottom: 20px
+    right: 50px
+    z-index: 100
+    display: flex
+    flex-direction: column
+    align-items: flex-end
+
+    .speech-bubble
+      position: relative
+      background: #ffffcc
+      border: 4px solid #000
+      padding: 15px
+      border-radius: 10px
+      margin-bottom: 20px
+      box-shadow: inset -4px -4px 0 #d4d4d4, 4px 4px 0 rgba(0, 0, 0, 0.2)
+      opacity: 0
+      transform: translateY(20px)
+      transition: all 0.4s ease
+      pointer-events: none
+      width: 350px
+
+      p
+        font-family: "Courier New", Courier, monospace
+        font-size: 16px
+        color: #000
+        line-height: 1.5
+        margin: 0
+        font-weight: bold
+
+      &::after
+        content: ""
+        position: absolute
+        bottom: -12px
+        right: 30px
+        border-width: 12px 12px 0 0
+        border-style: solid
+        border-color: #000 transparent transparent transparent
+        transform: rotate(45deg)
+        background: #ffffcc
+
+    .paperClip
+      height: 120px
+      width: auto
+      transition: transform 0.3s ease
+      transform-origin: bottom right
+      cursor: pointer
+
+    &:hover
+      .speech-bubble
+        opacity: 1
+        transform: translate(-20px, -20px)
+
+      .paperClip
+        transform: scale(1.4) rotate(-5deg)
+
+#section_case
+  background: $gw-cream
+  +gw-grid-bg(rgba(16, 37, 31, 0.07), 28px)
+  padding: 100px 0
+  padding: 80px 0
+  text-align: center
+  
+  .case-jump-card
+    cursor: pointer
+    transition: transform 0.25s ease, filter 0.25s ease
+    position: relative
+
+    &:hover
+      transform: translateY(-8px)
+      filter: saturate(1.15)
+
+      h3
+        color: #d63031
+
+      img
+        transform: scale(1.12) !important
+
+    &:active
+      transform: translateY(-2px) scale(0.98)
+
+    h3
+      transition: color 0.25s ease
+
+    p
+      pointer-events: none
+
+    &::after
+      content: "CLICK TO SCAN ↓"
+      display: inline-block
+      margin-top: 8px
+      padding: 5px 9px
+      background: #1a1a1a
+      color: #00ff00
+      font-family: "Courier New", monospace
+      font-size: 12px
+      font-weight: 900
+      opacity: 0
+      transform: translateY(-4px)
+      transition: all 0.25s ease
+
+    &:hover::after
+      opacity: 1
+      transform: translateY(0)
+
+  .row
+    display: flex
+    flex-wrap: wrap
+    justify-content: center
+
+  .col-md-4
+    flex: 0 0 33.333%
+    max-width: 33.333%
+    padding: 0 15px
+
+  h1
+    display: inline-block
+    font-size: clamp(38px, 5vw, 60px)
+    font-weight: 800
+    color: $gw-ink
+    background: #ffffff
+    border: 4px solid $gw-ink
+    box-shadow: 8px 8px 0 $gw-ink
+    padding: 12px 22px
+    margin-bottom: 18px
+    margin-top: 18px
+
+  h3
+    margin: 20px 0
+    font-weight: 700
+    color: #2a8352
+
+  p
+    padding-bottom: 20px
+    font-size: 18px
+  
+  hr
+      width: 120px
+      height: 8px
+      background: $gw-teal
+      border: 3px solid $gw-ink
+      box-shadow: 4px 4px 0 $gw-ink
+
+  .img_wrap
+    height: 200px
+    overflow: hidden
+    border-radius: 7px
+
+  img
+    width: 100%
+    height: 100%
+    object-fit: cover
+    border-radius: 7px
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2)
+    transition: transform 0.3s ease
+
+    &:hover
+      transform: scale(1.15) !important
+      box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.4)
+
+#case_fashion
+  background-color: #2a8352
+  padding: 80px 0
+
+  .container
+    h1
+      color: white
+      margin-bottom: 30px
+
+    .report-container
+      position: relative
+      width: 100%
+      min-height: 450px
+
+    .system-report
+      position: absolute
+      top: 0
+      left: 50%
+      width: 90%
+      opacity: 0
+      transform: translateX(-50%) scale(0.9)
+      z-index: 5
+      background-color: #1a1a1a
+      border: 2px solid #333
+      border-radius: 4px
+      margin: 20px auto
+      max-width: 700px
+      text-align: left
+      font-family: "Courier New", Courier, monospace
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.1)
+
+      &.is-active
+        opacity: 1
+        transform: translateX(-50%) scale(1)
+        animation: fadeOutReport 1.5s forwards
+        animation-delay: 2s
+
+        .animate-bar::after
+          animation: barLoading 3s forwards 0.5s
+
+      .report-header
+        background-color: #333
+        color: #00ff00
+        padding: 8px 15px
+        display: flex
+        align-items: center
+        font-size: 16px
+
+        .status-dot
+          width: 10px
+          height: 10px
+          background-color: #ff0000
+          border-radius: 50%
+          margin-right: 10px
+          animation: blink 1s infinite
+
+      .report-body
+        padding: 25px
+        color: #00ff00
+        line-height: 1.8
+
+        .line,
+        .progress-wrapper
+          font-size: 14px
+
+        .line.detail
+          opacity: 0.8
+
+        .progress-wrapper
+          margin-top: 25px
+          font-weight: bold
+
+          .bar
+            letter-spacing: 2px
+
+    .animate-bar
+      font-size: 0
+
+      &::after
+        font-size: 15px
+        display: inline-block
+        content: "[████████░░] 80%"
+
+    .data-results
+      position: relative
+      width: 100%
+      visibility: hidden
+      opacity: 0
+      transform: scale(0.95)
+      z-index: 1
+
+      &.is-active
+        animation: fadeInResults 1s forwards
+        animation-delay: 3.5s
+
+      .chart-window
+        background: #c0c0c0
+        border: 2px solid #fff
+        border-right-color: #000
+        border-bottom-color: #000
+        margin-top: 30px
+        padding: 2px
+
+        .window-title-bar
+          background: #000080
+          color: white
+          padding: 3px 8px
+          font-size: 12px
+          font-family: "MS Sans Serif", sans-serif
+          display: flex
+          justify-content: space-between
+          align-items: center
+
+          .window-controls
+            display: flex
+            gap: 2px
+
+            button
+              width: 16px
+              height: 14px
+              padding: 0
+              font-size: 10px
+              line-height: 10px
+              background: #c0c0c0
+              color: #000
+              border-top: 1px solid #fff
+              border-left: 1px solid #fff
+              border-right: 1px solid #000
+              border-bottom: 1px solid #000
+              cursor: default
+
+        .chart-container
+          background: #1a1a1a
+          border: 2px inset #fff
+
+        .chart-note
+          color: #000
+          font-size: 11px
+          padding: 10px
+          background: #c0c0c0
+
+  .fashion-content-layer
+    margin-top: 70px
+    color: #fff
+
+  .plain-explain,
+  .washing-methods,
+  .brand-cases
+    max-width: 1000px
+    margin: 55px auto 0
+    padding: 28px
+    background: rgba(255, 255, 255, 0.08)
+    border: 1px solid rgba(255, 255, 255, 0.25)
+    border-radius: 14px
+    backdrop-filter: blur(4px)
+
+    h2
+      color: #f8f6cc
+      font-size: 30px
+      font-weight: 900
+      margin-bottom: 22px
+
+    p
+      font-size: 17px
+      line-height: 1.7
+      margin: 8px 0
+
+  .method-grid
+    display: grid
+    grid-template-columns: repeat(3, 1fr)
+    gap: 18px
+    align-items: stretch
+
+  .method-card
+    position: relative
+    background: #f8f6cc
+    color: #1a1a1a
+    padding: 22px
+    border-radius: 10px
+    border: 3px solid #1a1a1a
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.35)
+    transition: transform 0.25s ease, box-shadow 0.25s ease
+    display: flex
+    flex-direction: column
+    height: 100%
+
+    &:hover
+      transform: translateY(-6px)
+      box-shadow: 10px 14px 0 rgba(0, 0, 0, 0.45)
+
+    .tag
+      display: inline-block
+      background: #1a1a1a
+      color: #00ff00
+      font-family: "Courier New", monospace
+      font-size: 12px
+      padding: 4px 8px
+      margin-bottom: 12px
+
+    h3
+      color: #2a8352
+      font-size: 24px
+      min-height: 34px
+      font-weight: 900
+      margin: 8px 0 16px
+
+    h4
+      color: #4f6848
+      font-size: 15px
+      font-weight: 900
+      margin: 18px 0 6px
+
+    p
+      font-size: 15px
+      line-height: 1.6
+      margin: 6px 0
+
+    .method-section
+      margin-top: 12px
+
+      h4
+        margin: 0 0 8px
+
+      p
+        margin: 6px 0
+
+    .method-section.seen
+      min-height: 95px
+
+    .method-section.hidden-problem
+      min-height: 135px
+
+    .method-action
+      margin-top: auto
+
+      .reveal-btn
+        margin-top: 18px
+
+      .filter-line
+        min-height: 68px
+
+    .reveal-btn
+      margin-top: 18px
+      background: #2a8352
+      color: #fff
+      border: 2px solid #1a1a1a
+      padding: 8px 12px
+      cursor: pointer
+      font-weight: 900
+      box-shadow: 3px 3px 0 #1a1a1a
+
+      &:hover
+        background: #d63031
+
+    .filter-line
+      display: none
+      margin-top: 16px
+      padding: 12px
+      background: #1a1a1a
+      color: #00ff00
+      font-family: "Courier New", monospace
+      font-weight: bold
+
+    &.is-revealed
+      .filter-line
+        display: block
+
+  .case-tabs
+    display: flex
+    flex-wrap: wrap
+    gap: 10px
+    margin-bottom: 22px
+
+    .case-tab
+      background: #c0c0c0
+      color: #000
+      border-top: 2px solid #fff
+      border-left: 2px solid #fff
+      border-right: 2px solid #000
+      border-bottom: 2px solid #000
+      padding: 8px 18px
+      font-weight: 900
+      cursor: pointer
+
+      &.is-active
+        background: #e0ca7d
+        color: #1a1a1a
+
+  .case-panel
+    display: none
+    background: #111
+    border: 2px solid #99b489
+    padding: 26px
+    box-shadow: inset 0 0 20px rgba(153, 180, 137, 0.2)
+
+    &.is-active
+      display: block
+
+    h3
+      color: #e0ca7d
+      font-size: 24px
+      font-weight: 900
+      margin-bottom: 16px
+      text-align: center
+
+    > p
+      color: #fff
+      font-size: 17px
+      line-height: 1.7
+      text-align: center
+      
+    .case-punchline
+      text-align: center
+      
+    .case-img-wrapper
+      max-width: 400px
+      margin: 15px auto
+      border: 2px solid #333
+      background-color: #fff
+      padding: 5px
+      border-radius: 4px
+      display: flex
+      justify-content: center
+      align-items: center
+
+      img
+        width: 100%
+        height: auto
+        display: block
+
+  // 收據時間線
+  .receipt-timeline
+    display: flex
+    justify-content: center
+    margin-top: 34px
+
+  .receipt-paper
+    position: relative
+    width: min(520px, 100%)
+    padding: 32px 26px 28px
+    background: #fffbea
+    color: #1a1a1a
+    font-family: "Cubic11", "VT323", "Courier New", monospace !important
+    box-shadow: 0 18px 0 rgba(0, 0, 0, 0.25), 0 24px 38px rgba(0, 0, 0, 0.28)
+    //border: 1px solid rgba(0, 0, 0, 0.18)
+    overflow: hidden
+
+    *
+      font-family: "Cubic11", "VT323", "Courier New", monospace !important
+
+    &::before,
+    &::after
+      content: ""
+      position: absolute
+      left: 0
+      width: 100%
+      height: 14px
+      background-size: 20px 20px
+      background-repeat: repeat-x
+      background-image: linear-gradient(135deg, black 25%, transparent 25%), linear-gradient(225deg, black 25%, transparent 25%)
+
+    &::before
+      top: 0
+
+    &::after
+      bottom: -1px
+      transform: rotate(180deg)
+
+  .receipt-head
+    text-align: center
+    padding-top: 8px
+
+    .store-name
+      margin: 0
+      font-size: 28px
+      font-weight: 400
+      letter-spacing: 1px
+      color: #1a1a1a
+
+    .receipt-subtitle
+      margin: 6px 0 0
+      font-size: 18px
+      letter-spacing: 2px
+      color: #4f6848
+
+    .receipt-id
+      margin: 8px 0 0
+      font-size: 15px
+      color: #777
+
+  .receipt-dash
+    border-top: 1px dashed rgba(0, 0, 0, 0.65)
+    margin: 18px 0
+
+  .receipt-info
+    p
+      margin: 5px 0
+      font-size: 18px
+      line-height: 1.35
+      color: #333
+
+  .receipt-row
+    display: grid
+    grid-template-columns: 92px 1fr
+    gap: 14px
+    padding: 16px 0
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.25)
+    opacity: 0
+    transform: translateY(12px)
+
+    &.is-printed
+      opacity: 1
+      transform: translateY(0)
+      transition: all 0.45s ease
+
+    .receipt-date
+      font-size: 18px
+      font-weight: 400
+      color: #2a8352
+      padding-top: 3px
+
+    .receipt-copy
+      h4
+        margin: 0 0 7px
+        font-size: 22px
+        font-weight: 400
+        color: #1a1a1a
+
+      p
+        margin: 0
+        font-size: 18px
+        line-height: 1.45
+        color: #222
+
+      span
+        display: inline-block
+        margin-top: 9px
+        padding: 4px 8px
+        background: #1a1a1a
+        color: #00ff00
+        font-family: "VT323", "Courier New", monospace !important
+        font-size: 15px
+        font-weight: 400
+        letter-spacing: 0.5px
+
+    &.is-final
+      position: relative
+      background: rgba(214, 48, 49, 0.08)
+      margin-left: -10px
+      margin-right: -10px
+      padding-left: 10px
+      padding-right: 10px
+
+      .receipt-date,
+      .receipt-copy h4
+        color: #d63031
+
+      .receipt-copy span
+        background: #d63031
+        color: #fff
+
+  .receipt-total
+    display: flex
+    justify-content: flex-start
+    align-items: flex-start
+    gap: 14px
+    margin-top: 14px
+
+    p
+      margin: 0
+      font-size: 16px
+      font-weight: 400
+      color: #1a1a1a
+
+    h3
+      margin: 0
+      max-width: 330px
+      text-align: right
+      font-size: 24px
+      line-height: 1.2
+      color: #d63031
+      font-weight: 400
+
+  .receipt-barcode-text
+    display: block
+    font-family: "Libre Barcode 128", cursive !important
+    font-size: 110px !important
+    font-weight: 400 !important
+    text-align: center
+    color: #1a1a1a !important
+    letter-spacing: 0
+    line-height: 0.5
+    margin: 10px 0 0
+    padding: 0
+    overflow: hidden
+
+  .receipt-foot
+    text-align: center
+
+    p
+      margin: 4px 0
+      font-size: 16px
+      color: #4f6848
+
+@media screen and (max-width: 900px)
+  #case_fashion
+    .method-grid
+      grid-template-columns: 1fr
+
+    .plain-explain,
+    .washing-methods,
+    .brand-cases
+      padding: 20px
+
+    .receipt-row
+      grid-template-columns: 1fr
+      gap: 6px
+
+    .receipt-total
+      flex-direction: column
+
+      h3
+        text-align: left
+
+#case_fuel.fuel-pixel-motion
+  --x: 50%
+  --y: 50%
+  --mx: 0
+  --my: 0
+  --vx: 0
+  --vy: 0
+  --tilt-x: 0deg
+  --tilt-y: 0deg
+
+  --fuel-bg: #030604
+  --fuel-panel: #07110c
+  --fuel-panel-2: #0b120d
+  --fuel-ink: #d8ffe1
+  --fuel-muted: #8ab99a
+  --fuel-green: #7cffb2
+  --fuel-green-hot: #00ff7f
+  --fuel-amber: #e0ca7d
+  --fuel-red: #ff4d4d
+  --fuel-black: #010302
+
+  position: relative
+  overflow: hidden
+  padding: 96px 0
+  min-height: 100vh
+  background: radial-gradient(circle at var(--x) var(--y), rgba(124, 255, 178, 0.12), transparent 24rem), radial-gradient(circle at 12% 18%, rgba(224, 202, 125, 0.08), transparent 22rem), linear-gradient(180deg, #050806 0%, #07110c 52%, #020403 100%)
+  color: var(--fuel-ink)
+  image-rendering: pixelated
+  cursor: auto
+
+  &.is-cursor-active
+    cursor: none
+
+  *
+    image-rendering: pixelated
+
+  &::before
+    content: ""
+    position: absolute
+    inset: 0
+    z-index: 0
+    pointer-events: none
+    background-image: linear-gradient(rgba(124, 255, 178, 0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(124, 255, 178, 0.035) 1px, transparent 1px)
+    background-size: 42px 42px
+    transform: translate3d(calc(var(--mx) * -10px), calc(var(--my) * -10px), 0)
+
+  &::after
+    content: ""
+    position: absolute
+    inset: 0
+    z-index: 1
+    pointer-events: none
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0, transparent 1px)
+    background-size: 100% 4px
+    opacity: 0.22
+    mix-blend-mode: screen
+
+  #fuelMatrixCanvas
+    position: absolute
+    inset: 0
+    z-index: 0
+    width: 100%
+    height: 100%
+    opacity: 0.11
+    pointer-events: none
+
+  .container
+    position: relative
+    z-index: 3
+    width: min(1120px, 92%)
+    margin: 0 auto
+
+  .fuel-cursor
+    position: fixed
+    left: 0
+    top: 0
+    z-index: 99999
+    width: 38px
+    height: 38px
+    pointer-events: none
+    transform: translate3d(calc(var(--x) - 19px), calc(var(--y) - 19px), 0)
+    mix-blend-mode: exclusion
+
+    .cursor-grid
+      display: grid
+      grid-template-columns: repeat(3, 8px)
+      grid-template-rows: repeat(3, 8px)
+      gap: 3px
+      transform: rotate(calc(var(--vx) * 0.08deg))
+
+      span
+        width: 8px
+        height: 8px
+        background: var(--fuel-green)
+        box-shadow: 0 0 0 1px #ffffff
+
+        &:nth-child(2),
+        &:nth-child(4),
+        &:nth-child(6),
+        &:nth-child(8)
+          background: transparent
+          box-shadow: none
+
+        &:nth-child(5)
+          background: #ffffff
+
+    .cursor-label
+      margin-top: 4px
+      color: var(--fuel-green)
+      font-family: "Courier New", monospace
+      font-size: 9px
+      font-weight: 900
+      letter-spacing: 1px
+      text-shadow: 2px 2px 0 #000
+
+  .fuel-organic-layer
+    position: absolute
+    inset: 0
+    z-index: 2
+    pointer-events: none
+
+  .fuel-orb
+    position: absolute
+    width: 20px
+    height: 20px
+    background: var(--fuel-green)
+    box-shadow: 6px 6px 0 var(--fuel-black), 0 0 24px rgba(124, 255, 178, 0.28)
+    transform: translate3d(calc(var(--mx) * var(--depth-x, 30px)), calc(var(--my) * var(--depth-y, 30px)), 0)
+
+    &::after
+      content: ""
+      position: absolute
+      inset: 5px
+      background: #ffffff
+
+  .orb-1
+    left: 8%
+    top: 18%
+    --depth-x: 22px
+    --depth-y: -18px
+
+  .orb-2
+    right: 12%
+    top: 28%
+    width: 14px
+    height: 14px
+    --depth-x: -34px
+    --depth-y: 24px
+
+  .orb-3
+    left: 18%
+    bottom: 18%
+    width: 26px
+    height: 26px
+    background: var(--fuel-amber)
+    --depth-x: 42px
+    --depth-y: 30px
+
+  .orb-4
+    right: 18%
+    bottom: 12%
+    width: 18px
+    height: 18px
+    background: var(--fuel-red)
+    --depth-x: -26px
+    --depth-y: -36px
+
+  .fuel-fragment
+    position: absolute
+    padding: 5px 8px
+    border: 1px solid rgba(124, 255, 178, 0.36)
+    background: rgba(0, 0, 0, 0.32)
+    color: rgba(216, 255, 225, 0.72)
+    font-family: "Courier New", monospace
+    font-size: 11px
+    font-weight: 900
+    letter-spacing: 1px
+    text-shadow: 2px 2px 0 #000
+    transform: translate3d(calc(var(--mx) * var(--depth-x, 20px)), calc(var(--my) * var(--depth-y, 20px)), 0)
+
+  .fragment-1
+    left: 7%
+    top: 48%
+    --depth-x: -18px
+    --depth-y: 26px
+
+  .fragment-2
+    right: 8%
+    top: 48%
+    --depth-x: 32px
+    --depth-y: -22px
+
+  .fragment-3
+    left: 38%
+    bottom: 9%
+    --depth-x: -36px
+    --depth-y: -20px
+
+  .fragment-4
+    right: 32%
+    top: 14%
+    color: #ffb3a8
+    border-color: rgba(255, 77, 77, 0.45)
+    --depth-x: 24px
+    --depth-y: 36px
+
+  .pixel-motion-hero
+    position: relative
+    overflow: hidden
+    padding: clamp(24px, 4vw, 42px)
+    margin-bottom: 30px
+    background: linear-gradient(135deg, rgba(8, 18, 12, 0.96), rgba(2, 6, 4, 0.92))
+    border: 2px solid rgba(124, 255, 178, 0.42)
+    box-shadow: 0 0 0 1px rgba(224, 202, 125, 0.12), 18px 18px 0 rgba(0, 0, 0, 0.42), inset 0 0 48px rgba(124, 255, 178, 0.055)
+    transform: perspective(1100px) rotateX(var(--tilt-y)) rotateY(var(--tilt-x)) translate3d(calc(var(--mx) * 6px), calc(var(--my) * 4px), 0)
+    transform-style: preserve-3d
+    transition: box-shadow 0.22s ease
+
+    &::before
+      content: ""
+      position: absolute
+      inset: 14px
+      border: 1px solid rgba(124, 255, 178, 0.16)
+      pointer-events: none
+
+    &::after
+      content: ""
+      position: absolute
+      top: -6px
+      right: -6px
+      width: 54px
+      height: 54px
+      pointer-events: none
+      background: linear-gradient(var(--fuel-green), var(--fuel-green)) 0 0 / 34px 6px no-repeat, linear-gradient(var(--fuel-green), var(--fuel-green)) 34px 6px / 6px 6px no-repeat, linear-gradient(var(--fuel-green), var(--fuel-green)) 40px 12px / 6px 6px no-repeat, linear-gradient(var(--fuel-green), var(--fuel-green)) 46px 18px / 6px 34px no-repeat
+
+  .fuel-hero-glow
+    position: absolute
+    inset: -30%
+    z-index: 0
+    pointer-events: none
+    background: radial-gradient(circle at var(--x) var(--y), rgba(124, 255, 178, 0.13), transparent 28rem)
+    filter: contrast(120%)
+    transform: translate3d(calc(var(--mx) * -18px), calc(var(--my) * -16px), 0)
+
+  .fuel-scan-beam
+    position: absolute
+    top: -40%
+    left: calc(var(--mx) * 18% + 14%)
+    z-index: 1
+    width: 32%
+    height: 190%
+    pointer-events: none
+    background: linear-gradient(90deg, transparent, rgba(124, 255, 178, 0.075), transparent)
+    transform: rotate(16deg) translate3d(calc(var(--vx) * 0.45px), 0, 0)
+
+  .fuel-file-top,
+  .fuel-title-wrap,
+  .fuel-hero-grid,
+  .fuel-command-strip
+    position: relative
+    z-index: 2
+
+  .fuel-file-top
+    display: flex
+    flex-wrap: wrap
+    gap: 10px
+    margin-bottom: 28px
+    font-family: "Courier New", monospace
+
+    span
+      display: inline-flex
+      align-items: center
+      min-height: 28px
+      padding: 5px 9px
+      border: 1px solid rgba(124, 255, 178, 0.35)
+      background: rgba(0, 0, 0, 0.32)
+      color: #9fffc0
+      font-size: 12px
+      letter-spacing: 1px
+      box-shadow: 3px 3px 0 #000
+
+    .file-status
+      color: #030604
+      background: var(--fuel-green)
+      border-color: var(--fuel-green)
+      font-weight: 900
+
+    .file-risk
+      color: #ffb3a8
+      border-color: rgba(255, 77, 77, 0.55)
+      background: rgba(255, 77, 77, 0.09)
+
+  .fuel-title-wrap
+    max-width: 980px
+
+    .eyebrow
+      display: inline-block
+      margin: 0 0 16px
+      padding: 7px 10px
+      background: rgba(224, 202, 125, 0.1)
+      border-left: 4px solid var(--fuel-amber)
+      color: var(--fuel-amber)
+      font-family: "Courier New", monospace
+      font-size: 13px
+      letter-spacing: 1.5px
+      text-transform: uppercase
+      box-shadow: 4px 4px 0 #000
+
+    h1
+      margin: 0
+      color: #f0fff3
+      font-size: clamp(44px, 7vw, 88px)
+      line-height: 0.95
+      font-weight: 1000
+      letter-spacing: -3px
+      text-shadow: 0 0 16px rgba(124, 255, 178, 0.15)
+
+      .title-word
+        display: inline-block
+        transform: translate3d(calc(var(--mx) * 7px), calc(var(--my) * -5px), 0)
+
+      .title-cross
+        display: inline-block
+        margin: 0 14px
+        color: var(--fuel-amber)
+        font-style: normal
+        font-family: "Courier New", monospace
+        text-shadow: none
+        transform: translate3d(calc(var(--mx) * -12px), calc(var(--my) * 8px - 4px), 0)
+
+    .case-subtitle
+      margin: 24px 0 0
+      max-width: 790px
+      color: #bddfca
+      font-size: 20px
+      line-height: 1.75
+      font-weight: 700
+
+      &::before
+        content: ">> "
+        color: var(--fuel-green)
+        font-family: "Courier New", monospace
+
+      strong
+        color: #ffffff
+        background: rgba(255, 77, 77, 0.12)
+        border-bottom: 2px solid var(--fuel-red)
+        padding: 0 4px
+
+  .fuel-hero-grid
+    display: grid
+    grid-template-columns: repeat(3, 1fr)
+    gap: 14px
+    margin-top: 34px
+
+  .fuel-meta-card
+    position: relative
+    overflow: hidden
+    min-height: 164px
+    padding: 16px
+    background: rgba(0, 0, 0, 0.28)
+    border: 1px solid rgba(124, 255, 178, 0.28)
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.65), inset 0 0 20px rgba(124, 255, 178, 0.035)
+    transform: translate3d(calc(var(--mag-x, 0) * 1px), calc(var(--mag-y, 0) * 1px), 0)
+    transition: border-color 0.18s ease, background 0.18s ease
+
+    &::after
+      content: ""
+      position: absolute
+      right: -6px
+      top: -6px
+      width: 36px
+      height: 36px
+      background: linear-gradient(var(--fuel-green), var(--fuel-green)) 0 0 / 22px 4px no-repeat, linear-gradient(var(--fuel-green), var(--fuel-green)) 22px 4px / 4px 4px no-repeat, linear-gradient(var(--fuel-green), var(--fuel-green)) 26px 8px / 4px 22px no-repeat
+
+    &:hover
+      border-color: rgba(124, 255, 178, 0.72)
+      background: rgba(124, 255, 178, 0.045)
+
+    &.is-danger
+      border-color: rgba(255, 77, 77, 0.42)
+
+      .meta-meter i
+        background: linear-gradient(90deg, var(--fuel-red), #ff9b91)
+
+      &::after
+        background: linear-gradient(var(--fuel-red), var(--fuel-red)) 0 0 / 22px 4px no-repeat, linear-gradient(var(--fuel-red), var(--fuel-red)) 22px 4px / 4px 4px no-repeat, linear-gradient(var(--fuel-red), var(--fuel-red)) 26px 8px / 4px 22px no-repeat
+
+    &.is-warning
+      border-color: rgba(224, 202, 125, 0.42)
+
+      .meta-meter i
+        background: linear-gradient(90deg, var(--fuel-amber), #fff2a8)
+
+      &::after
+        background: linear-gradient(var(--fuel-amber), var(--fuel-amber)) 0 0 / 22px 4px no-repeat, linear-gradient(var(--fuel-amber), var(--fuel-amber)) 22px 4px / 4px 4px no-repeat, linear-gradient(var(--fuel-amber), var(--fuel-amber)) 26px 8px / 4px 22px no-repeat
+
+  .meta-kicker
+    display: inline-block
+    margin-bottom: 12px
+    color: rgba(216, 255, 225, 0.55)
+    font-family: "Courier New", monospace
+    font-size: 11px
+    letter-spacing: 1px
+
+  .fuel-meta-card h3
+    margin: 0 0 10px
+    color: var(--fuel-green)
+    font-family: "Courier New", monospace
+    font-size: 17px
+
+  .fuel-meta-card p
+    min-height: 54px
+    margin: 0 0 14px
+    color: #d8ffe1
+    font-size: 15px
+    line-height: 1.55
+
+  .meta-meter
+    height: 14px
+    background: #020403
+    border: 1px solid rgba(216, 255, 225, 0.22)
+    overflow: hidden
+
+    i
+      display: block
+      width: var(--meter)
+      height: 100%
+      background: linear-gradient(90deg, var(--fuel-green-hot), var(--fuel-green))
+      box-shadow: 0 0 12px rgba(124, 255, 178, 0.25)
+
+  .fuel-command-strip
+    display: flex
+    align-items: center
+    gap: 10px
+    margin-top: 24px
+    padding: 12px 14px
+    background: #020403
+    border: 1px solid rgba(124, 255, 178, 0.3)
+    font-family: "Courier New", monospace
+    box-shadow: inset 0 0 18px rgba(124, 255, 178, 0.04)
+
+    .command-prompt
+      color: var(--fuel-amber)
+
+    .command-text
+      color: #9fffc0
+
+    .command-caret
+      width: 9px
+      height: 18px
+      background: var(--fuel-green)
+      animation: fuelCaretBlink 0.9s steps(2, end) infinite
+
+  .fuel-hacker-nav
+    display: flex
+    flex-wrap: wrap
+    gap: 12px
+    align-items: center
+    margin: 26px 0 42px
+    padding: 13px 14px
+    background: rgba(0, 0, 0, 0.34)
+    border: 1px solid rgba(124, 255, 178, 0.22)
+    font-family: "Courier New", monospace
+
+    span
+      color: var(--fuel-amber)
+      letter-spacing: 1px
+      font-weight: 900
+
+    a
+      position: relative
+      padding: 5px 8px
+      color: #bddfca
+      border: 1px solid transparent
+      text-decoration: none
+      transition: color 0.16s ease, border-color 0.16s ease, background 0.16s ease
+
+      &::before
+        content: "["
+        color: rgba(124, 255, 178, 0.55)
+
+      &::after
+        content: "]"
+        color: rgba(124, 255, 178, 0.55)
+
+      &:hover
+        color: var(--fuel-green)
+        border-color: rgba(124, 255, 178, 0.4)
+        background: rgba(124, 255, 178, 0.06)
+        text-shadow: none
+
+  .fuel-dashboard,
+  .fuel-ad-scan,
+  .fuel-switchboard
+    margin-top: 52px
+
+  .fuel-dashboard,
+  .fuel-ad-scan,
+  .fuel-switchboard
+    background: rgba(0, 0, 0, 0.38)
+    border: 2px solid rgba(124, 255, 178, 0.32)
+    box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.42), inset 0 0 28px rgba(124, 255, 178, 0.055)
+
+  .fuel-dashboard
+    background: #0b0f0c
+    border-color: rgba(124, 255, 178, 0.5)
+
+  .hacker-titlebar
+    background: #020503
+    color: var(--fuel-green)
+    display: flex
+    justify-content: space-between
+    align-items: center
+    padding: 10px 14px
+    font-family: "Courier New", monospace
+    border-bottom: 1px solid rgba(124, 255, 178, 0.56)
+    box-shadow: inset 0 -1px 0 rgba(124, 255, 178, 0.18)
+
+  .terminal-path
+    display: flex
+    align-items: center
+    gap: 10px
+    font-size: 15px
+
+    .prompt
+      color: var(--fuel-green)
+      text-shadow: 0 0 8px rgba(124, 255, 178, 0.35)
+
+    .path
+      color: #c8ffd7
+
+  .terminal-status
+    display: flex
+    align-items: center
+    gap: 8px
+    font-size: 12px
+    letter-spacing: 1px
+    color: #9fffc0
+
+    .status-dot
+      width: 8px
+      height: 8px
+      border-radius: 0
+      background: var(--fuel-green)
+      box-shadow: 0 0 12px rgba(124, 255, 178, 0.8)
+      animation: blink 1s infinite
+
+  .dashboard-grid
+    display: grid
+    grid-template-columns: 1.4fr 1fr
+    gap: 18px
+    padding: 22px
+
+  .terminal-panel
+    grid-row: span 3
+    background: #020503
+    border: 1px solid rgba(124, 255, 178, 0.62)
+    box-shadow: inset 0 0 18px rgba(124, 255, 178, 0.08)
+
+  .terminal-header
+    padding: 10px 14px
+    background: #051b10
+    color: var(--fuel-green)
+    font-family: "Courier New", monospace
+    display: flex
+    align-items: center
+    gap: 8px
+    border-bottom: 1px solid rgba(124, 255, 178, 0.35)
+
+    .prompt
+      color: var(--fuel-amber)
+
+  .terminal-body
+    padding: 20px
+    font-family: "Courier New", monospace
+
+    p
+      margin: 8px 0
+      line-height: 1.6
+      font-size: 15px
+
+    .command
+      color: var(--fuel-green)
+
+    .clean-text
+      color: #b8ffd0
+      padding-left: 14px
+
+    .warning-text
+      color: #ff8d86
+      padding-left: 14px
+      
+  .meter
+    height: 16px
+    background: #111
+    border: 1px solid rgba(255, 255, 255, 0.18)
+    overflow: hidden
+    margin-bottom: 12px
+
+    .meter-fill
+      display: block
+      height: 100%
+
+    &.green .meter-fill
+      background: linear-gradient(90deg, var(--fuel-green-hot), var(--fuel-green))
+
+    &.red .meter-fill
+      background: linear-gradient(90deg, var(--fuel-red), #ff9b91)
+
+    &.yellow .meter-fill
+      background: linear-gradient(90deg, var(--fuel-amber), #fff2a8)
+
+  // =============================
+  // Ad Scan
+  // =============================
+
+  .fuel-ad-scan,
+  .fuel-switchboard
+    padding: 28px
+
+    h2
+      color: var(--fuel-green)
+      font-size: 30px
+      margin: 0 0 22px
+      text-shadow: 0 0 10px rgba(124, 255, 178, 0.18)
+
+    p
+      font-size: 17px
+      line-height: 1.75
+
+  .section-terminal-title
+    font-family: "Courier New", monospace
+    color: #9fffc0
+    margin-bottom: 16px
+
+    span
+      color: var(--fuel-amber)
+      margin-right: 8px
+
+  .ad-scan-board
+    display: grid
+    grid-template-columns: 0.75fr 1.25fr
+    gap: 24px
+    align-items: stretch
+
+  .fuel-ad-image
+    width: 100%
+    align-self: stretch
+    justify-self: stretch
+    background: #050805
+    border: 1px solid rgba(124, 255, 178, 0.38)
+    padding: 12px
+    box-shadow: 0 0 18px rgba(124, 255, 178, 0.1)
+    display: flex
+    align-items: center
+    justify-content: center
+
+    img
+      width: auto
+      height: auto
+      max-width: 100%
+      max-height: 100%
+      display: block
+      object-fit: contain
+      filter: contrast(1.04) saturate(0.95)
+
+  .fuel-ad-analysis
+    display: flex
+    flex-direction: column
+    min-width: 0
+    align-self: stretch
+
+  .analysis-card
+    height: 100%
+    flex: 1
+    background: #050805
+    border: 1px solid rgba(124, 255, 178, 0.38)
+    padding: 22px
+    box-shadow: inset 0 0 18px rgba(124, 255, 178, 0.05)
+    display: flex
+    flex-direction: column
+    justify-content: center
+
+    .analysis-label
+      color: var(--fuel-amber)
+      font-family: "Courier New", monospace
+      font-size: 12px
+      margin-bottom: 10px
+      letter-spacing: 1px
+
+    h3
+      color: var(--fuel-green)
+      font-size: 24px
+      margin: 0 0 16px
+
+    p
+      margin: 8px 0
+      color: var(--fuel-ink)
+
+  .fuel-toggle-item
+    border: 1px solid rgba(124, 255, 178, 0.3)
+    margin-bottom: 14px
+    background: #040704
+
+    &.is-open
+      .fuel-toggle-content
+        display: block
+
+  .fuel-toggle
+    width: 100%
+    background: #001f12
+    color: var(--fuel-green)
+    border: none
+    padding: 14px 18px
+    text-align: left
+    font-family: "Courier New", monospace
+    font-size: 18px
+    cursor: pointer
+    display: flex
+    gap: 12px
+    align-items: center
+    transition: background 0.18s ease, color 0.18s ease
+
+    &:hover
+      background: #00351f
+      color: #ffffff
+
+    .toggle-index
+      color: var(--fuel-amber)
+
+  .fuel-toggle-content
+    display: none
+    padding: 20px
+    border-top: 1px solid rgba(124, 255, 178, 0.22)
+
+    h3
+      color: var(--fuel-amber)
+      margin: 0 0 12px
+      font-size: 22px
+
+    p
+      margin: 8px 0
+
+    .short-line
+      margin-top: 14px
+      padding: 12px
+      background: #111
+      color: var(--fuel-green)
+      font-family: "Courier New", monospace
+      border-left: 4px solid var(--fuel-amber)
+
+#case_fuel.fuel-pixel-motion
+  .fuel-cursor
+    opacity: 0
+    visibility: hidden
+    transition: opacity 0.18s ease
+    
+  .fuel-scramble-terminal
+    position: relative
+    margin-top: 52px
+    background: #020403
+    border: 2px solid rgba(124, 255, 178, 0.42)
+    box-shadow: 14px 14px 0 rgba(0, 0, 0, 0.46), inset 0 0 34px rgba(124, 255, 178, 0.045)
+    overflow: hidden
+
+    &::before
+      content: ""
+      position: absolute
+      inset: 0
+      pointer-events: none
+      background-image: linear-gradient(rgba(124, 255, 178, 0.045) 1px, transparent 1px)
+      background-size: 100% 5px
+      opacity: 0.35
+      mix-blend-mode: screen
+
+    &::after
+      content: ""
+      position: absolute
+      top: -20%
+      left: var(--scan-x, -30%)
+      width: 26%
+      height: 160%
+      pointer-events: none
+      background: linear-gradient(90deg, transparent, rgba(124, 255, 178, 0.08), transparent)
+      transform: rotate(15deg)
+      transition: left 0.35s ease
+
+  .fuel-scramble-terminal.is-decoding
+    --scan-x: 90%
+
+  .fuel-scramble-terminal .hacker-titlebar
+    position: relative
+    z-index: 2
+    background: #050a07
+    color: var(--fuel-green)
+    display: flex
+    justify-content: space-between
+    align-items: center
+    padding: 12px 14px
+    font-family: "Courier New", monospace
+    border-bottom: 1px solid rgba(124, 255, 178, 0.45)
+
+  .fuel-scramble-terminal .terminal-path
+    display: flex
+    align-items: center
+    gap: 12px
+    min-width: 0
+
+    .prompt
+      color: var(--fuel-green)
+      text-shadow: 2px 2px 0 #000
+
+    .path
+      color: #bddfca
+      opacity: 0.86
+
+  .fuel-scramble-terminal .terminal-status
+    display: flex
+    align-items: center
+    gap: 8px
+    color: #9fffc0
+    font-family: "Courier New", monospace
+    font-size: 12px
+    letter-spacing: 1px
+
+    .status-dot
+      width: 8px
+      height: 8px
+      border-radius: 0
+      background: var(--fuel-green)
+      box-shadow: 0 0 12px rgba(124, 255, 178, 0.85)
+      animation: fuelStatusPulse 1s steps(2, end) infinite
+
+  .fuel-scramble-terminal .main-terminal
+    position: relative
+    z-index: 2
+    background: radial-gradient(circle at 20% 0%, rgba(124, 255, 178, 0.06), transparent 28rem), #020403
+    border: none
+    box-shadow: none
+
+  .fuel-scramble-terminal .terminal-header
+    padding: 14px 18px
+    background: #06110b
+    border-bottom: 1px solid rgba(124, 255, 178, 0.24)
+    color: #9fffc0
+    font-family: "Courier New", monospace
+    display: flex
+    align-items: center
+    gap: 10px
+
+    .prompt
+      color: var(--fuel-amber)
+
+  .fuel-scramble-terminal .terminal-body
+    padding: clamp(22px, 4vw, 38px)
+    font-family: "Courier New", monospace
+
+    p
+      margin: 0
+      line-height: 1.75
+
+  .fuel-scramble-terminal .command
+    color: var(--fuel-green)
+    margin-bottom: 16px
+    letter-spacing: 0.5px
+
+  .fuel-scramble-terminal .is-warning-command
+    margin-top: 28px
+    color: var(--fuel-red)
+
+  .scramble-list
+    list-style: none
+    margin: 0
+    padding: 0
+    display: grid
+    gap: 14px
+
+    li
+      position: relative
+      padding-left: 24px
+      color: #d8ffe1
+      font-size: clamp(15px, 2vw, 20px)
+      line-height: 1.45
+      min-height: 1.45em
+      text-shadow: 2px 2px 0 #000
+
+      &::before
+        content: "■"
+        position: absolute
+        left: 0
+        top: 0.1em
+        color: var(--fuel-amber)
+        font-size: 11px
+
+  .warning-stack
+    display: grid
+    gap: 12px
+    margin-top: 16px
+
+  .fuel-scramble-terminal .warning-text
+    position: relative
+    padding: 12px 14px 12px 18px
+    color: #ffb3a8
+    background: rgba(255, 77, 77, 0.07)
+    border-left: 4px solid var(--fuel-red)
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45)
+    font-size: clamp(14px, 1.8vw, 17px)
+    min-height: 1.7em
+
+  .fuel-scramble-terminal [data-scramble]
+    display: inline-block
+    min-height: 1em
+    will-change: contents
+    white-space: pre-wrap
+
+  .fuel-scramble-terminal .is-scrambling
+    color: #ffffff
+    text-shadow: 0 0 8px rgba(124, 255, 178, 0.35), 2px 2px 0 #000
+
+  .fuel-scramble-terminal .is-decoded
+    animation: fuelDecodedFlash 0.45s steps(2, end) both
+
+
+#case_fuel.fuel-pixel-motion.is-cursor-active
+  .fuel-cursor
+    opacity: 1
+    visibility: visible
+
+@keyframes fuelStatusPulse
+  0%, 45%
+    opacity: 1
+  46%, 100%
+    opacity: 0.35
+
+@keyframes fuelDecodedFlash
+  0%
+    filter: brightness(1.8)
+  100%
+    filter: brightness(1)
+
+@media screen and (max-width: 900px)
+  #case_fuel.fuel-pixel-motion
+    .fuel-scramble-terminal .hacker-titlebar
+      flex-direction: column
+      align-items: flex-start
+      gap: 8px
+
+    .fuel-scramble-terminal .terminal-path
+      flex-wrap: wrap
+
+    .fuel-scramble-terminal .terminal-body
+      padding: 22px
+
+    .scramble-list
+      gap: 10px
+
+@media screen and (max-width: 520px)
+  #case_fuel.fuel-pixel-motion
+    .fuel-scramble-terminal .terminal-body
+      padding: 18px
+
+    .fuel-scramble-terminal .warning-text
+      padding: 10px 12px
+
+@keyframes fuelCaretBlink
+  0%, 45%
+    opacity: 1
+
+  46%, 100%
+    opacity: 0
+
+@media screen and (max-width: 900px)
+  #case_fuel.fuel-pixel-motion
+    cursor: auto
+    padding: 72px 0
+
+    .fuel-cursor
+      display: none
+
+    .container
+      width: 92%
+
+    .fuel-file-top
+      gap: 8px
+
+      span
+        font-size: 11px
+
+    .pixel-motion-hero
+      padding: 24px
+      transform: none
+
+    .fuel-title-wrap
+      h1
+        font-size: clamp(38px, 13vw, 60px)
+        letter-spacing: -2px
+
+        .title-cross
+          margin: 0 8px
+
+      .case-subtitle
+        font-size: 17px
+
+    .fuel-hero-grid
+      grid-template-columns: 1fr
+      gap: 12px
+
+    .fuel-hacker-nav
+      overflow-x: auto
+      flex-wrap: nowrap
+      padding-bottom: 14px
+
+      a,
+      span
+        white-space: nowrap
+
+    .hacker-titlebar
+      align-items: flex-start
+      gap: 10px
+      flex-direction: column
+
+    .dashboard-grid,
+    .ad-scan-board
+      grid-template-columns: 1fr
+
+    .dashboard-grid
+      padding: 16px
+
+    .fuel-ad-scan,
+    .fuel-switchboard
+      padding: 22px
+
+    .fuel-ad-image,
+    .fuel-ad-analysis,
+    .analysis-card
+      width: 100%
+      max-width: none
+      justify-self: stretch
+      align-self: stretch
+
+    .fuel-ad-image
+      min-height: 280px
+      padding: 12px
+
+      img
+        width: auto
+        height: auto
+        max-width: 72%
+        max-height: 240px
+        object-fit: contain
+
+    .analysis-card
+      height: auto
+      flex: none
+      justify-content: flex-start
+      padding: 18px
+
+      h3
+        font-size: 22px
+
+    .fuel-toggle
+      font-size: 15px
+      align-items: flex-start
+
+    .fuel-final-alert
+      padding: 24px
+
+      h2
+        font-size: 30px
+
+      p
+        font-size: 17px
+
+@media screen and (max-width: 520px)
+  #case_fuel.fuel-pixel-motion
+    padding: 64px 0
+
+    .pixel-motion-hero
+      padding: 20px
+      box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.42), inset 0 0 36px rgba(124, 255, 178, 0.045)
+
+    .fuel-file-top
+      span
+        width: 100%
+        justify-content: space-between
+
+    .fuel-title-wrap
+      h1
+        font-size: clamp(34px, 15vw, 52px)
+
+      .case-subtitle
+        font-size: 16px
+
+    .fuel-command-strip
+      align-items: flex-start
+      flex-wrap: wrap
+
+    .fuel-meta-card
+      min-height: auto
+
+    .terminal-body
+      padding: 16px
+
+      p
+        font-size: 13px
+
+    .fuel-ad-scan,
+    .fuel-switchboard
+      padding: 18px
+
+      h2
+        font-size: 24px
+
+    .fuel-ad-image
+      min-height: 240px
+      padding: 8px
+
+      img
+        max-width: 85%
+        max-height: 210px
+
+    .analysis-card
+      padding: 18px
+
+      h3
+        font-size: 20px
+
+      p
+        font-size: 15px
+        
+#case_fin
+  background: #f2efe3
+  color: #1f2a24
+  padding: 90px 0
+  position: relative
+  overflow: hidden
+
+  &::before
+    content: ""
+    position: absolute
+    inset: 0
+    background-image: linear-gradient(rgba(31, 42, 36, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(31, 42, 36, 0.05) 1px, transparent 1px)
+    background-size: 32px 32px
+    pointer-events: none
+
+  .container
+    position: relative
+    z-index: 2
+    width: min(1100px, 92%)
+    margin: 0 auto
+
+  .fin-hero
+    margin-bottom: 44px
+
+    .fin-eyebrow
+      display: inline-block
+      background: #1f2a24
+      color: #00ff7f
+      font-family: "Courier New", monospace
+      padding: 6px 10px
+      margin-bottom: 14px
+      font-size: 13px
+
+    h1
+      font-size: 44px
+      font-weight: 900
+      color: #1f2a24
+      margin: 0 0 12px
+
+    .case-subtitle
+      font-size: 20px
+      line-height: 1.7
+      max-width: 760px
+      color: #42534a
+
+  .fin-checkout-stage
+    display: grid
+    grid-template-columns: 0.95fr 1.05fr
+    gap: 34px
+    align-items: center
+    margin-top: 44px
+
+  .fin-register
+    background: #b8b8b8
+    border: 4px solid #2b2b2b
+    box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.22)
+    padding: 22px
+    position: relative
+
+  .register-screen
+    background: #06110b
+    border: 4px solid #1f2a24
+    padding: 18px
+    color: #00ff7f
+    font-family: "Courier New", monospace
+    box-shadow: inset 0 0 18px rgba(0, 255, 127, 0.18)
+
+    .screen-line
+      color: #9dffbf
+      font-size: 14px
+      margin-bottom: 8px
+
+    .screen-item
+      font-size: 26px
+      font-weight: 900
+      margin-bottom: 14px
+
+    .screen-grid
+      display: grid
+      grid-template-columns: 1fr 1fr
+      gap: 8px 12px
+
+      span
+        color: #7affb2
+
+      strong
+        color: #fff
+
+        &.low
+          color: #ff5f5f
+
+  .register-body
+    margin-top: 20px
+    background: #d4d4d4
+    border: 3px solid #2b2b2b
+    padding: 18px
+
+  .register-slot
+    width: 130px
+    height: 12px
+    background: #111
+    margin-bottom: 18px
+
+  .register-keypad
+    display: grid
+    grid-template-columns: repeat(4, 1fr)
+    gap: 8px
+
+    button
+      background: #f8f6cc
+      border: 2px solid #2b2b2b
+      box-shadow: 0 4px 0 #2b2b2b
+      padding: 9px 6px
+      font-family: "Courier New", monospace
+      font-weight: 900
+      font-size: 12px
+      cursor: default
+
+      &.large
+        grid-column: 1 / -1
+        background: #00ff7f
+        color: #1f2a24
+
+  .fin-checkout-copy
+    background: #fffbea
+    border: 2px solid #1f2a24
+    padding: 30px
+    box-shadow: 8px 8px 0 rgba(31, 42, 36, 0.22)
+
+    h2
+      font-size: 30px
+      font-weight: 900
+      color: #1f2a24
+      margin: 0 0 18px
+
+    p
+      font-size: 17px
+      line-height: 1.75
+      color: #33443a
+      margin: 9px 0
+
+  .fin-punchline
+    margin-top: 20px
+    background: #1f2a24
+    color: #00ff7f
+    padding: 14px
+    font-family: "Courier New", monospace
+    font-weight: 900
+
+  .fin-phone-stage
+    margin-top: 78px
+    display: grid
+    grid-template-columns: 1.05fr 0.95fr
+    gap: 40px
+    align-items: center
+
+  .fin-phone-copy
+    .fin-section-tag
+      display: inline-block
+      background: #1f2a24
+      color: #00ff7f
+      font-family: "Courier New", monospace
+      font-size: 13px
+      padding: 6px 10px
+      margin-bottom: 14px
+
+    h2
+      font-size: 30px
+      font-weight: 900
+      margin: 0 0 18px
+      color: #1f2a24
+
+    p
+      font-size: 17px
+      line-height: 1.75
+      color: #33443a
+      margin: 9px 0
+
+  .phone-wrap
+    display: flex
+    justify-content: center
+
+  .fin-phone
+    width: 310px
+    background: #111
+    border-radius: 36px
+    padding: 14px
+    box-shadow: 0 20px 0 rgba(0, 0, 0, 0.22), 0 30px 40px rgba(0, 0, 0, 0.25)
+
+  .phone-speaker
+    width: 72px
+    height: 6px
+    background: #333
+    border-radius: 99px
+    margin: 0 auto 12px
+
+  .phone-screen
+    background: #ecfff2
+    border-radius: 24px
+    padding: 18px
+    min-height: 520px
+    color: #1f2a24
+    position: relative
+    overflow: hidden
+
+  .app-top
+    display: flex
+    justify-content: space-between
+    align-items: center
+    font-family: "Courier New", monospace
+    font-weight: 900
+    margin-bottom: 22px
+
+    .signal
+      color: #00a85a
+
+  .fund-card
+    background: #ffffff
+    border: 2px solid #1f2a24
+    border-radius: 18px
+    padding: 18px
+    box-shadow: 5px 5px 0 rgba(31, 42, 36, 0.18)
+
+    .label
+      font-family: "Courier New", monospace
+      color: #00a85a
+      font-size: 12px
+      margin: 0 0 8px
+
+    h3
+      font-size: 24px
+      font-weight: 900
+      margin: 0 0 18px
+
+  .goods-row
+    display: flex
+    justify-content: space-between
+    border-bottom: 1px dashed rgba(31, 42, 36, 0.25)
+    padding: 10px 0
+    align-items: flex-start
+    
+    strong
+      flex-shrink: 0       
+      width: 75px   
+    p
+      margin: 0         
+      text-align: left
+
+  .fin-check-btn
+    width: 100%
+    margin-top: 20px
+    background: #1f2a24
+    color: #00ff7f
+    border: none
+    padding: 12px
+    border-radius: 10px
+    font-family: "Courier New", monospace
+    font-weight: 900
+    cursor: pointer
+
+  .risk-item
+    display: flex
+    justify-content: space-between
+    border-bottom: 1px dashed rgba(216, 255, 225, 0.25)
+    padding: 9px 0
+
+    span
+      color: #9dffbf
+      font-size: 13px
+
+    strong
+      color: #ff5f5f
+      font-size: 13px
+
+  .warning
+    color: #ff5f5f
+    font-family: "Courier New", monospace
+    margin-top: 14px
+
+  .fin-case-dws
+    margin-top: 82px
+    display: grid
+    grid-template-columns: 1.25fr 0.75fr
+    gap: 26px
+    align-items: stretch
+    
+  .fin-image
+    display: flex
+    justify-content: center
+    align-items: center
+
+    img.dws
+      width: 100%
+      max-width: 250px 
+      height: auto   
+      object-fit: contain
+      border: 2px solid #1f2a24
+      box-shadow: 6px 6px 0 rgba(31, 42, 36, 0.22) 
+
+  .case-doc
+    background: #fffbea
+    border: 2px solid #1f2a24
+    box-shadow: 8px 8px 0 rgba(31, 42, 36, 0.22)
+
+  .doc-head
+    background: #1f2a24
+    color: #00ff7f
+    padding: 10px 14px
+    display: flex
+    justify-content: space-between
+    font-family: "Courier New", monospace
+    font-size: 13px
+
+  .doc-body
+    padding: 28px
+
+    h2
+      font-size: 30px
+      font-weight: 900
+      margin: 0 0 18px
+      color: #1f2a24
+
+    p
+      font-size: 17px
+      line-height: 1.75
+      color: #33443a
+      margin: 9px 0
+
+  .case-punchline
+    margin-top: 22px
+    background: #d63031
+    color: #fff
+    padding: 14px
+    font-size: 20px
+    font-weight: 900
+    text-align: center
+
+@media screen and (max-width: 900px)
+  #case_fin
+    padding: 70px 0
+
+    .fin-hero
+      h1
+        font-size: 34px
+
+      .case-subtitle
+        font-size: 17px
+
+    .fin-checkout-stage,
+    .fin-phone-stage,
+    .fin-case-dws
+      grid-template-columns: 1fr
+
+    .fin-phone-stage
+      gap: 28px
+
+    .phone-wrap
+      order: -1
+
+    .fin-phone
+      width: min(310px, 100%)
+
+    .phone-screen
+      min-height: 500px
+
+    .fin-checkout-copy,
+    .doc-body
+      padding: 22px
+
+    .case-stamp
+      min-height: 220px
+
+    .fin-final-warning
+      padding: 28px
+
+      h2
+        font-size: 32px
+
+      p
+        font-size: 17px
+
+@media screen and (max-width: 520px)
+  #case_fin
+    .fin-hero h1
+      font-size: 30px
+
+    .register-screen
+      .screen-item
+        font-size: 22px
+
+      .screen-grid
+        grid-template-columns: 1fr
+
+    .register-keypad
+      grid-template-columns: repeat(3, 1fr)
+
+    .fin-phone
+      width: 100%
+
+    .phone-screen
+      min-height: 480px
+      padding: 15px
+
+    .fund-card
+      padding: 15px
+
+      h3
+        font-size: 21px
+
+    .doc-body
+      h2
+        font-size: 24px
+
+      p
+        font-size: 15px
+
+    .case-stamp
+      h3
+        font-size: 26px
+        
+#action.action
+  background: #fff8dc
+  color: #244034
+  padding: 90px 0
+  position: relative
+  overflow: hidden
+
+  &::before
+    content: ""
+    position: absolute
+    inset: 0
+    background-image: radial-gradient(rgba(42, 131, 82, 0.15) 1.5px, transparent 1.5px)
+    background-size: 24px 24px
+    pointer-events: none
+
+  .container
+    position: relative
+    z-index: 2
+    width: min(1120px, 92%)
+    margin: 0 auto
+
+  .action-hero
+    text-align: center
+    margin-bottom: 36px
+
+  .hero-stickers
+    svg
+      color: #244034
+      cursor: pointer
+      transition: transform 0.3s ease, color 0.3s ease
+      stroke-linecap: round
+      stroke-linejoin: round
+
+      &:hover
+        color: #2a8352 
+
+    .icon-globe:hover
+      .globe-circle
+        animation: globeRotate 2s linear infinite
+
+    .icon-magnifier:hover
+      .magnifier-group
+        animation: magnifierShake 1s ease-in-out infinite
+
+    .icon-wallet
+      .wallet-body, .flap
+        transition: all 0.4s ease
+      &:hover
+        .wallet-body
+          transform: scale(1.05)
+        .flap
+          transform: rotateY(25deg) translate(2px)
+
+    // 4. 打勾縮放與描邊效果
+    .icon-checked
+      transition: transform 0.2s ease
+      .check-icon
+        transition: stroke-dashoffset 0.4s ease
+        stroke-dasharray: 20
+        stroke-dashoffset: 0
+      &:hover
+        transform: scale(1.1)
+        .check-icon
+          animation: checkDraw 0.5s ease-in-out
+
+  @keyframes globeRotate
+    0%
+      transform: rotate(0deg)
+    100%
+      transform: rotate(360deg)
+
+  @keyframes magnifierShake
+    0%, 100%
+      transform: translate(0, 0) rotate(0deg)
+    25%
+      transform: translate(1px, -1px) rotate(-5deg)
+    50%
+      transform: translate(0, -2px) rotate(5deg)
+    75%
+      transform: translate(-1px, -1px) rotate(-5deg)
+
+  @keyframes checkDraw
+    0%
+      stroke-dashoffset: 20
+    100%
+      stroke-dashoffset: 0
+
+  h1
+    font-size: 48px
+    font-weight: 900
+    color: #2a8352
+    margin: 0 0 12px
+
+  .action-intro
+    max-width: 860px
+    margin: 0 auto 10px
+    color: #365447
+    font-size: 20px
+    line-height: 1.8
+
+  .action-subnote
+    color: #6d7d70
+    font-size: 16px
+    margin: 0
+
+  .folder-tabs
+    display: flex
+    flex-wrap: wrap
+    justify-content: flex-end
+    padding-right: 20px
+    gap: 10px
+    margin: 36px 0 0
+
+  .folder-tab
+    border: 3px solid #244034
+    background: #fff
+    color: #244034
+    padding: 12px 18px
+    border-radius: 18px 18px 0 0
+    box-shadow: 4px 4px 0 #244034
+    font-weight: 900
+    cursor: pointer
+    display: flex
+    align-items: center
+    gap: 8px
+    transition: transform 0.2s ease, background 0.2s ease
+
+    &:hover
+      transform: translateY(-4px)
+
+    &.is-active
+      background: #7cce56
+      transform: translateY(-6px)
+
+  .folder-stage
+    background: #ffffff
+    border: 4px solid #244034
+    border-radius: 26px
+    box-shadow: 10px 10px 0 #244034
+    overflow: hidden
+    margin-top: -2px
+
+  .folder-top
+    background: #d7f7c2
+    border-bottom: 4px solid #244034
+    padding: 14px 18px
+    display: flex
+    justify-content: space-between
+    align-items: center
+    gap: 12px
+
+  .folder-path
+    display: flex
+    flex-wrap: wrap
+    gap: 8px
+    font-weight: 900
+
+    strong
+      color: #2a8352
+
+  .folder-badge
+    background: #ff6b6b
+    color: white
+    border: 3px solid #244034
+    border-radius: 999px
+    padding: 6px 12px
+    font-weight: 900
+    box-shadow: 3px 3px 0 #244034
+
+  .folder-content
+    padding: 30px
+
+  .folder-panel
+    display: none
+
+    &.is-active
+      display: block
+      animation: popIn 0.35s ease both
+
+  @keyframes popIn
+    from
+      opacity: 0
+      transform: translateY(14px) scale(0.98)
+    to
+      opacity: 1
+      transform: translateY(0) scale(1)
+
+  .panel-hero
+    display: grid
+    grid-template-columns: 120px 1fr
+    gap: 22px
+    align-items: center
+    padding: 24px
+    border: 3px solid #244034
+    border-radius: 24px
+    margin-bottom: 24px
+    box-shadow: 6px 6px 0 #244034
+
+    &.gov
+      background: #d9ecff
+
+    &.consumer
+      background: #ffe7a8
+
+    &.company
+      background: #d7f7c2
+
+    &.other
+      background: #ffd8e1
+
+    &.compare
+      background: #e2d7ff
+
+  .panel-illustration
+    width: 105px
+    height: 105px
+    background: white
+    border: 3px solid #244034
+    border-radius: 28px
+    box-shadow: 5px 5px 0 #244034
+    display: flex
+    align-items: center
+    justify-content: center
+    font-size: 54px
+    
+  .panel-kicker
+    display: inline-block
+    background: #244034
+    color: #fff !important
+    border-radius: 999px
+    padding: 4px 10px
+    font-family: "Courier New", monospace
+    margin: 0 0 10px
+
+  .panel-copy
+    h2
+      color: #244034
+      font-size: 32px
+      margin: 0 0 10px
+      font-weight: 900
+      padding-top: 10px
+
+    p
+      color: #365447
+      font-size: 17px
+      line-height: 1.75
+      margin: 0
+        
+  .deep-card
+    background: #fff9e8
+    border: 3px solid #244034
+    border-radius: 22px
+    padding: 24px
+    box-shadow: 6px 6px 0 rgba(36, 64, 52, 0.35)
+    margin-bottom: 24px
+
+    h3
+      color: #2a8352
+      font-size: 25px
+      margin: 0 0 12px
+
+    p
+      color: #365447
+      font-size: 16px
+      line-height: 1.8
+      margin: 10px 0
+
+  .solution-grid
+    display: grid
+    grid-template-columns: repeat(3, 1fr)
+    gap: 18px
+    margin-bottom: 24px
+
+  .solution-card
+    background: #fff
+    border: 3px solid #244034
+    border-radius: 22px
+    padding: 20px
+    box-shadow: 6px 6px 0 #244034
+    transition: transform 0.2s ease
+
+    &:hover
+      transform: translateY(-6px) rotate(-1deg)
+
+    .card-icon
+      font-size: 34px
+
+    h3
+      font-size: 22px
+      color: #2a8352
+      margin: 12px 0 8px
+
+    p
+      color: #365447
+      line-height: 1.65
+      font-size: 15px
+
+    .note
+      background: #fff1b8
+      border: 2px dashed #244034
+      border-radius: 14px
+      padding: 10px
+      margin-top: 12px
+      font-weight: 700
+      font-size: 14px
+
+  .pros-cons
+    display: grid
+    grid-template-columns: 1fr 1fr
+    gap: 18px
+    margin-bottom: 24px
+
+    .pro,
+    .con
+      border: 3px solid #244034
+      border-radius: 20px
+      padding: 20px
+      background: #fff
+      box-shadow: 5px 5px 0 #244034
+
+    .pro
+      background: #d7f7c2
+
+    .con
+      background: #ffd8d8
+
+    h3
+      margin: 0 0 10px
+      color: #244034
+
+    li
+      line-height: 1.7
+
+  .claim-radar,
+  .before-after,
+  .action-network
+    display: grid
+    grid-template-columns: 1fr 1fr
+    gap: 18px
+    margin-bottom: 24px
+
+  .radar-card,
+  .radar-explain,
+  .bad-claim,
+  .good-claim,
+  .network-node
+    background: #fff
+    border: 3px solid #244034
+    border-radius: 22px
+    padding: 22px
+    box-shadow: 6px 6px 0 #244034
+
+  .claim-text
+    background: #d7f7c2
+    border-radius: 14px
+    padding: 14px
+    font-weight: 900
+
+  .radar-tags
+    display: flex
+    flex-wrap: wrap
+    gap: 8px
+    margin: 14px 0
+
+    span
+      background: #ff6b6b
+      color: white
+      border-radius: 999px
+      padding: 5px 10px
+      font-weight: 900
+
+  .radar-result
+    color: #d63031
+    font-weight: 900
+
+  .consumer-steps
+    display: grid
+    grid-template-columns: repeat(4, 1fr)
+    gap: 14px
+    margin-bottom: 24px
+
+  .step
+    background: #fff
+    border: 3px solid #244034
+    border-radius: 20px
+    padding: 18px
+    box-shadow: 5px 5px 0 #244034
+
+    span
+      display: inline-block
+      background: #ffb84d
+      border-radius: 999px
+      padding: 4px 8px
+      font-weight: 900
+
+    h3
+      color: #2a8352
+      margin: 12px 0 8px
+
+    p
+      color: #365447
+      line-height: 1.6
+
+  .interactive-mini
+    background: #fff0f5
+    border: 3px solid #244034
+    border-radius: 24px
+    padding: 22px
+    margin-bottom: 24px
+    box-shadow: 6px 6px 0 #244034
+
+  .mini-question
+    background: white
+    border-radius: 14px
+    padding: 14px
+    font-weight: 900
+
+  .mini-options
+    display: flex
+    flex-wrap: wrap
+    gap: 10px
+
+    button
+      border: 3px solid #244034
+      border-radius: 999px
+      padding: 10px 14px
+      background: #fff
+      font-weight: 900
+      cursor: pointer
+      box-shadow: 3px 3px 0 #244034
+
+      &:hover
+        background: #d7f7c2
+
+  .claim-feedback
+    font-weight: 900
+    color: #2a8352
+    padding-top: 10px
+    padding-left: 5px
+
+  .bad-claim
+    background: #ffd8d8
+
+  .good-claim
+    background: #d7f7c2
+
+  .bad-claim span,
+  .good-claim span
+    display: inline-block
+    margin-top: 10px
+    font-weight: 900
+
+  .network-node
+    span
+      font-size: 38px
+
+    h3
+      color: #2a8352
+      margin: 10px 0
+
+    p
+      color: #365447
+      line-height: 1.65
+
+  .compare-table
+    border: 3px solid #244034
+    border-radius: 22px
+    overflow: hidden
+    box-shadow: 6px 6px 0 #244034
+    margin-bottom: 24px
+
+  .compare-row
+    display: grid
+    grid-template-columns: 1.5fr 0.8fr 0.9fr 0.9fr 1.2fr
+
+    span
+      padding: 14px
+      border-bottom: 2px solid #244034
+      border-right: 2px solid #244034
+      background: #fff
+      font-size: 14px
+
+      &:last-child
+        border-right: none
+
+    &.head
+      span
+        background: #7cce56
+        color: #244034
+        font-weight: 900
+
+    &:last-child
+      span
+        border-bottom: none
+
+  .action-toolkit
+    margin-top: 58px
+    background: #d9ecff
+    border: 4px solid #244034
+    border-radius: 26px
+    padding: 26px
+    box-shadow: 8px 8px 0 #244034
+
+  .toolkit-header
+    display: flex
+    justify-content: space-between
+    gap: 18px
+    align-items: center
+    margin-bottom: 18px
+
+  .toolkit-title
+    display: grid
+    grid-template-columns: auto 1fr
+    gap: 6px 10px
+    align-items: center
+
+    span
+      font-size: 34px
+      grid-row: span 2
+
+    strong
+      font-size: 24px
+      color: #244034
+
+    p
+      margin: 0
+      color: #365447
+
+  #runActionScan
+    border: 3px solid #244034
+    background: #ffb84d
+    color: #244034
+    border-radius: 999px
+    padding: 12px 18px
+    font-weight: 900
+    box-shadow: 4px 4px 0 #244034
+    cursor: pointer
+
+    &:hover
+      transform: translateY(-3px)
+
+  .toolkit-list
+    display: grid
+    grid-template-columns: repeat(5, 1fr)
+    gap: 12px
+
+  .toolkit-item
+    background: #fff
+    border: 3px solid #244034
+    border-radius: 18px
+    padding: 14px
+    font-weight: 900
+    display: flex
+    gap: 8px
+    opacity: 0.55
+    transition: all 0.25s ease
+
+    &.is-checked
+      opacity: 1
+      background: #d7f7c2
+      transform: translateY(-4px)
+
+    p
+      margin: 0
+
+  .scan-result
+    margin: 18px 0 0
+    color: #244034
+    font-weight: 900
+
+  .green-search
+    margin-top: 34px
+    background: #ffffff
+    border: 4px solid #244034
+    border-radius: 30px
+    padding: 28px
+    box-shadow: 8px 8px 0 #244034
+    position: relative
+    overflow: hidden
+
+    &::before
+      content: ""
+      position: absolute
+      top: -40px
+      right: -40px
+      width: 150px
+      height: 150px
+      background: #d7f7c2
+      border: 4px solid #244034
+      border-radius: 50%
+      opacity: 0.55
+
+  .search-header
+    text-align: center
+    position: relative
+    z-index: 1
+    margin-bottom: 20px
+
+  .search-logo
+    font-size: 44px
+    font-weight: 900
+    letter-spacing: -2px
+    margin-bottom: 8px
+
+    span
+      display: inline-block
+
+    .g1
+      color: #4285f4
+
+    .g2
+      color: #ea4335
+
+    .g3
+      color: #fbbc05
+
+    .g4
+      color: #4285f4
+
+    .g5
+      color: #34a853
+
+    .g6
+      color: #ea4335
+
+  .search-subtitle
+    margin: 0
+    color: #365447
+    font-size: 16px
+
+  .search-box
+    position: relative
+    z-index: 1
+    display: grid
+    grid-template-columns: auto 1fr auto
+    align-items: center
+    gap: 10px
+    width: min(760px, 100%)
+    margin: 0 auto
+    background: #fff
+    border: 3px solid #244034
+    border-radius: 999px
+    padding: 10px 12px 10px 18px
+    box-shadow: 5px 5px 0 #244034
+
+    .search-icon
+      font-size: 20px
+
+    input
+      border: none
+      outline: none
+      font-size: 16px
+      color: #244034
+      background: transparent
+      min-width: 0
+
+    button
+      border: 3px solid #244034
+      background: #7cce56
+      color: #244034
+      border-radius: 999px
+      padding: 8px 16px
+      font-weight: 900
+      cursor: pointer
+      box-shadow: 3px 3px 0 #244034
+
+      &:hover
+        transform: translateY(-2px)
+        background: #ffb84d
+
+  .search-suggestions
+    display: flex
+    flex-wrap: wrap
+    justify-content: center
+    gap: 10px
+    margin: 18px 0
+
+  .search-chip
+    border: 2px solid #244034
+    background: #fff8dc
+    color: #244034
+    border-radius: 999px
+    padding: 8px 13px
+    font-weight: 900
+    cursor: pointer
+    box-shadow: 3px 3px 0 #244034
+
+    &:hover
+      background: #d7f7c2
+      transform: translateY(-2px)
+
+  .search-result-count
+    color: #6d7d70
+    font-size: 14px
+    margin: 20px 0 16px
+    border-bottom: 2px dashed rgba(36, 64, 52, 0.25)
+    padding-bottom: 10px
+
+  .search-results
+    display: flex
+    flex-direction: column
+    gap: 20px
+
+  .search-result-card
+    background: #fff9e8
+    border: 3px solid #244034
+    border-radius: 22px
+    padding: 20px
+    box-shadow: 5px 5px 0 rgba(36, 64, 52, 0.35)
+    transition: transform 0.2s ease, box-shadow 0.2s ease
+
+    &:hover
+      transform: translateY(-4px)
+      box-shadow: 7px 7px 0 #244034
+
+    &.is-hidden
+      display: none
+
+  .result-url
+    color: #2a8352
+    font-size: 14px
+    margin-bottom: 6px
+    word-break: break-all
+
+  .search-result-card
+    h3
+      margin: 0 0 10px
+      font-size: 23px
+      line-height: 1.35
+
+      a
+        color: #315bdc
+        text-decoration: none
+
+        &:hover
+          text-decoration: underline
+
+  .result-desc
+    color: #365447
+    line-height: 1.7
+    margin: 0 0 14px
+
+  .how-to-use
+    background: #ffffff
+    border: 2px dashed #244034
+    border-radius: 18px
+    padding: 14px
+    margin-top: 12px
+
+    h4
+      color: #2a8352
+      margin: 0 0 8px
+      font-size: 17px
+
+    ol
+      margin: 0
+      padding-left: 22px
+
+    li
+      color: #365447
+      line-height: 1.65
+      margin-bottom: 4px
+
+  .search-tags
+    display: flex
+    flex-wrap: wrap
+    gap: 8px
+    margin-top: 14px
+
+    span
+      background: #d7f7c2
+      border: 2px solid #244034
+      border-radius: 999px
+      padding: 4px 9px
+      font-size: 13px
+      font-weight: 900
+      color: #244034
+
+  .no-search-result
+    display: none
+    margin-top: 18px
+    background: #ffd8d8
+    border: 3px solid #244034
+    border-radius: 22px
+    padding: 20px
+    box-shadow: 5px 5px 0 #244034
+
+    &.is-active
+      display: block
+
+    h3
+      margin: 0 0 8px
+      color: #d63031
+
+    p
+      margin: 0
+      color: #365447
+
+@media screen and (max-width: 900px)
+  #action.action
+    h1
+      font-size: 36px
+
+    .panel-hero,
+    .claim-radar,
+    .before-after,
+    .action-network,
+    .pros-cons
+      grid-template-columns: 1fr
+
+    .solution-grid,
+    .consumer-steps
+      grid-template-columns: 1fr 1fr
+
+    .solution-grid
+      .solution-card:nth-child(3)
+        grid-column: 1 / -1
+
+    .toolkit-header
+      flex-direction: column
+      align-items: flex-start
+
+    .toolkit-list
+      grid-template-columns: 1fr 1fr
+
+    .compare-row
+      grid-template-columns: 1fr
+
+      span
+        border-right: none
+        
+    .green-search
+      padding: 22px
+
+    .search-box
+      grid-template-columns: auto 1fr
+      border-radius: 24px
+
+      button
+        grid-column: 1 / -1
+        width: 100%
+
+    .search-logo
+      font-size: 36px
+
+@media screen and (max-width: 520px)
+  #action.action
+    padding: 70px 0
+
+    h1
+      font-size: 30px
+
+    .folder-content
+      padding: 18px
+
+    .panel-hero
+      padding: 18px
+
+    .panel-illustration
+      width: 82px
+      height: 82px
+      font-size: 42px
+
+    .solution-grid,
+    .consumer-steps,
+    .toolkit-list
+      grid-template-columns: 1fr
+
+    .folder-tab
+      width: 100%
+      justify-content: center
+
+    .action-final
+      h2
+        font-size: 28px
+        
+    .green-search
+      padding: 18px
+      border-radius: 22px
+
+    .search-result-card
+      padding: 16px
+
+      h3
+        font-size: 19px
+
+    .how-to-use
+      padding: 12px
+
+@media screen and (max-width: 770px)
+  #action.action
+    .folder-tabs
+      display: flex
+      flex-wrap: wrap
+      justify-content: center
+      gap: 12px
+      padding-left: 0
+      padding-right: 0 !important
+      margin: 28px 0 24px
+
+    .folder-tab
+      flex: 1 1 calc(50% - 12px)
+      max-width: calc(50% - 12px)
+      text-align: center
+      justify-content: center
+      border-radius: 999px
+      border-bottom: 3px solid #244034
+      transform: none
+      padding: 12px 14px
+      box-shadow: 4px 4px 0 #244034
+
+      &:hover
+        transform: translateY(-3px)
+
+      &.is-active
+        transform: none
+        border-color: #244034
+        background: #7cce56
+        color: #244034
+
+    .folder-stage
+      margin-top: 0
+
+#greenwashQuiz.greenwash-quiz
+  --quiz-mint: #8bd3c7
+  --quiz-teal: #00aaa2
+  --quiz-dark: #10251f
+  --quiz-cream: #fff8dc
+  --quiz-white: #ffffff
+  --quiz-wood: #d6a84a
+  --quiz-wood-light: #edc96d
+  --quiz-lime: #7cce56
+  --quiz-warning: #d63031
+  --quiz-shadow: #1f3029
+
+  position: relative
+  min-height: 100vh
+  padding: 80px 16px
+  background: var(--quiz-mint)
+  overflow: hidden
+  color: var(--quiz-dark)
+
+  &::before
+    content: ""
+    position: absolute
+    inset: 0
+    background-image: linear-gradient(rgba(16, 37, 31, 0.08) 2px, transparent 2px), linear-gradient(90deg, rgba(16, 37, 31, 0.08) 2px, transparent 2px)
+    background-size: 32px 32px
+    pointer-events: none
+
+  .quiz-pixel-cloud
+    position: absolute
+    width: 120px
+    height: 44px
+    background: var(--quiz-cream)
+    border: 6px solid var(--quiz-dark)
+    box-shadow: 8px 8px 0 var(--quiz-shadow)
+    opacity: 0.9
+    z-index: 1
+
+    &::before,
+    &::after
+      content: ""
+      position: absolute
+      background: var(--quiz-cream)
+      border: 6px solid var(--quiz-dark)
+      bottom: 18px
+
+    &::before
+      left: 18px
+      width: 36px
+      height: 36px
+
+    &::after
+      right: 20px
+      width: 44px
+      height: 44px
+
+    &.cloud-1
+      left: 6%
+      top: 8%
+
+    &.cloud-2
+      right: 8%
+      top: 18%
+      transform: scale(0.75)
+
+  .quiz-shell
+    position: relative
+    z-index: 2
+    width: min(860px, 100%)
+    margin: 0 auto
+
+  .quiz-cover,
+  .quiz-question-page,
+  .quiz-result-page
+    background: var(--quiz-mint)
+    border: 6px solid var(--quiz-dark)
+    box-shadow: 12px 12px 0 var(--quiz-shadow)
+
+  .quiz-cover
+    text-align: center
+    padding: 34px 24px 42px
+
+    &.is-hidden
+      display: none
+
+  .quiz-brand
+    color: var(--quiz-white)
+    font-size: 38px
+    font-weight: 900
+    margin-bottom: 28px
+    letter-spacing: -1px
+
+  .quiz-cover-character
+    display: flex
+    justify-content: center
+    margin-bottom: -10px
+
+  .quiz-pixel-person
+    position: relative
+    width: 220px
+    height: 230px
+    image-rendering: pixelated
+    animation: greenwashAvatarBounce 1.8s ease-in-out infinite
+
+  .quiz-hat
+    position: absolute
+    left: 36px
+    top: 0
+    width: 148px
+    height: 84px
+    background: var(--quiz-teal)
+    border: 8px solid var(--quiz-dark)
+    clip-path: polygon(50% 0, 100% 38%, 100% 100%, 0 100%, 0 38%)
+
+    &::before
+      content: ""
+      position: absolute
+      left: 0
+      right: 0
+      bottom: 12px
+      height: 18px
+      background: var(--quiz-cream)
+
+  .quiz-face
+    position: absolute
+    left: 68px
+    top: 54px
+    width: 84px
+    height: 76px
+    background: var(--quiz-white)
+    border: 8px solid var(--quiz-dark)
+    border-radius: 999px
+    z-index: 3
+
+    span
+      position: absolute
+      top: 28px
+      width: 10px
+      height: 12px
+      background: var(--quiz-dark)
+
+      &:first-child
+        left: 22px
+
+      &:nth-child(2)
+        right: 22px
+
+    i
+      position: absolute
+      left: 30px
+      bottom: 18px
+      width: 24px
+      height: 8px
+      border-bottom: 4px solid var(--quiz-dark)
+
+  .quiz-body
+    position: absolute
+    left: 72px
+    top: 124px
+    width: 76px
+    height: 70px
+    background: var(--quiz-white)
+    border: 8px solid var(--quiz-dark)
+    border-radius: 18px
+    z-index: 2
+
+  .quiz-arm
+    position: absolute
+    top: 138px
+    width: 40px
+    height: 48px
+    background: var(--quiz-white)
+    border: 8px solid var(--quiz-dark)
+    border-radius: 14px
+    z-index: 1
+
+    &.left
+      left: 44px
+
+    &.right
+      right: 44px
+
+  .quiz-leg
+    position: absolute
+    top: 188px
+    width: 30px
+    height: 36px
+    background: var(--quiz-white)
+    border: 8px solid var(--quiz-dark)
+    border-radius: 12px
+    z-index: 1
+
+    &.left
+      left: 76px
+
+    &.right
+      right: 76px
+
+  @keyframes greenwashAvatarBounce
+    0%, 100%
+      transform: translateY(0)
+
+    50%
+      transform: translateY(-10px)
+
+  .quiz-wood-sign
+    position: relative
+    background: repeating-linear-gradient(0deg, var(--quiz-wood) 0, var(--quiz-wood) 34px, var(--quiz-wood-light) 34px, var(--quiz-wood-light) 44px)
+    border: 8px solid var(--quiz-dark)
+    box-shadow: 8px 8px 0 var(--quiz-shadow)
+    padding: 32px 20px
+    margin: 0 auto 34px
+    max-width: 650px
+
+    p
+      margin: 0 0 8px
+      font-size: 28px
+      font-weight: 900
+
+    h1
+      margin: 0 0 20px
+      font-size: clamp(34px, 7vw, 66px)
+      line-height: 1.05
+      color: var(--quiz-dark)
+      font-weight: 900
+
+    h2
+      display: inline-block
+      margin: 0
+      padding: 8px 14px
+      background: var(--quiz-dark)
+      color: var(--quiz-white)
+      font-size: clamp(26px, 5vw, 44px)
+      box-shadow: 5px 5px 0 var(--quiz-white)
+      font-weight: 900
+
+  .quiz-start-btn,
+  .quiz-main-btn,
+  .quiz-sub-btn
+    border: 5px solid var(--quiz-dark)
+    box-shadow: 6px 6px 0 var(--quiz-shadow)
+    font-weight: 900
+    cursor: pointer
+    transition: transform 0.15s ease, box-shadow 0.15s ease
+
+    &:hover
+      transform: translateY(-4px)
+      box-shadow: 8px 8px 0 var(--quiz-shadow)
+
+    &:active
+      transform: translateY(2px)
+      box-shadow: 3px 3px 0 var(--quiz-shadow)
+
+    &:disabled
+      opacity: 0.45
+      cursor: not-allowed
+      transform: none
+
+  .quiz-start-btn
+    background: var(--quiz-teal)
+    color: var(--quiz-white)
+    padding: 16px 46px
+    font-size: 26px
+
+  .quiz-powered
+    margin-top: 24px
+    color: var(--quiz-white)
+    font-weight: 900
+
+  .quiz-question-page,
+  .quiz-result-page
+    display: none
+    padding: 28px
+
+    &.is-active
+      display: block
+
+  .quiz-question-top
+    display: flex
+    align-items: center
+    gap: 16px
+    margin-bottom: 22px
+    font-family: "Courier New", monospace
+    font-weight: 900
+
+    span
+      background: var(--quiz-dark)
+      color: var(--quiz-white)
+      padding: 8px 12px
+
+  .quiz-progress
+    flex: 1
+    height: 24px
+    border: 5px solid var(--quiz-dark)
+    background: var(--quiz-white)
+
+  #greenwashProgressFill
+    width: 0%
+    height: 100%
+    background: repeating-linear-gradient(45deg, var(--quiz-teal) 0, var(--quiz-teal) 12px, var(--quiz-lime) 12px, var(--quiz-lime) 24px)
+    transition: width 0.3s ease
+
+  .quiz-question-card
+    background: var(--quiz-cream)
+    border: 6px solid var(--quiz-dark)
+    box-shadow: 8px 8px 0 var(--quiz-shadow)
+    padding: 28px
+
+  .quiz-question-illust
+    display: flex
+    justify-content: center
+    margin-bottom: 22px
+
+  .quiz-mini-scene
+    position: relative
+    width: 230px
+    height: 150px
+    background: var(--quiz-mint)
+    border: 6px solid var(--quiz-dark)
+
+  .scene-box
+    position: absolute
+    left: 36px
+    bottom: 24px
+    width: 84px
+    height: 76px
+    background: var(--quiz-white)
+    border: 6px solid var(--quiz-dark)
+
+    &::before
+      content: "eco"
+      position: absolute
+      left: 12px
+      top: 18px
+      color: var(--quiz-teal)
+      font-weight: 900
+
+  .scene-leaf
+    position: absolute
+    right: 48px
+    top: 32px
+    width: 52px
+    height: 34px
+    background: var(--quiz-lime)
+    border: 6px solid var(--quiz-dark)
+    border-radius: 50% 0 50% 0
+
+  .scene-alert
+    position: absolute
+    right: 42px
+    bottom: 26px
+    width: 42px
+    height: 42px
+    background: var(--quiz-warning)
+    border: 6px solid var(--quiz-dark)
+
+    &::before
+      content: "!"
+      position: absolute
+      left: 12px
+      top: 0
+      color: var(--quiz-white)
+      font-size: 30px
+      font-weight: 900
+
+  .quiz-question-label
+    display: inline-block
+    margin: 0 0 12px
+    padding: 6px 10px
+    background: var(--quiz-dark)
+    color: #00ff7f
+    font-family: "Courier New", monospace
+    font-weight: 900
+
+  #greenwashQuestionText
+    margin: 0 0 20px
+    font-size: 28px
+    line-height: 1.45
+    color: var(--quiz-dark)
+    font-weight: 900
+
+  .quiz-options
+    display: grid
+    gap: 12px
+
+  .quiz-option
+    display: grid
+    grid-template-columns: 42px 1fr
+    align-items: center
+    gap: 12px
+    width: 100%
+    padding: 14px
+    background: var(--quiz-white)
+    border: 5px solid var(--quiz-dark)
+    box-shadow: 5px 5px 0 var(--quiz-shadow)
+    text-align: left
+    font-weight: 900
+    color: var(--quiz-dark)
+    cursor: pointer
+
+    &:hover
+      background: #d7f7c2
+
+    &.is-selected
+      background: var(--quiz-wood-light)
+
+    &.is-correct
+      background: #b9f5c4
+
+    &.is-wrong
+      background: #ffd1d1
+
+  .quiz-option-marker
+    width: 36px
+    height: 36px
+    background: var(--quiz-dark)
+    color: var(--quiz-white)
+    display: grid
+    place-items: center
+    font-family: "Courier New", monospace
+
+  .quiz-feedback
+    margin-top: 20px
+    background: var(--quiz-dark)
+    color: #00ff7f
+    padding: 16px
+    border: 5px solid #000
+    font-family: "Courier New", monospace
+    line-height: 1.6
+
+    &.is-wrong
+      color: #ffb3b3
+
+  .quiz-question-actions
+    display: flex
+    justify-content: flex-end
+    gap: 12px
+    margin-top: 20px
+
+  .quiz-main-btn,
+  .quiz-sub-btn
+    padding: 12px 20px
+    font-size: 17px
+
+  .quiz-main-btn
+    background: var(--quiz-teal)
+    color: var(--quiz-white)
+
+  .quiz-sub-btn
+    background: var(--quiz-white)
+    color: var(--quiz-dark)
+
+  .quiz-result-grid
+    display: grid
+    grid-template-columns: 0.95fr 1.05fr
+    gap: 28px
+
+  .quiz-certificate-wrap
+    background: var(--quiz-white)
+    border: 6px solid var(--quiz-dark)
+    box-shadow: 8px 8px 0 var(--quiz-shadow)
+    padding: 14px
+
+    canvas
+      width: 100%
+      display: block
+      border: 4px solid var(--quiz-dark)
+      background: var(--quiz-mint)
+
+    .quiz-main-btn
+      width: 100%
+      margin-top: 14px
+
+  .quiz-result-copy
+    background: var(--quiz-cream)
+    border: 6px solid var(--quiz-dark)
+    box-shadow: 8px 8px 0 var(--quiz-shadow)
+    padding: 28px
+
+  .quiz-result-kicker
+    display: inline-block
+    background: var(--quiz-dark)
+    color: #00ff7f
+    padding: 6px 10px
+    font-family: "Courier New", monospace
+    font-weight: 900
+
+  #greenwashRoleName
+    font-size: 44px
+    margin: 14px 0 8px
+    font-weight: 900
+
+  #greenwashScoreText
+    color: var(--quiz-teal)
+    font-size: 24px
+    margin: 0 0 16px
+
+  #greenwashRoleDesc
+    font-size: 18px
+    line-height: 1.7
+    font-weight: 800
+
+  .quiz-role-tags
+    display: flex
+    flex-wrap: wrap
+    gap: 10px
+    margin: 20px 0
+
+    span
+      background: var(--quiz-teal)
+      color: var(--quiz-white)
+      border: 4px solid var(--quiz-dark)
+      padding: 6px 10px
+      font-weight: 900
+
+  .quiz-advice-box
+    background: #d7f7c2
+    border: 4px dashed var(--quiz-dark)
+    padding: 18px
+    margin-bottom: 20px
+
+    h4
+      margin: 0 0 8px
+      font-size: 22px
+
+    p
+      margin: 0
+      line-height: 1.7
+      font-weight: 800
+
+@media screen and (max-width: 760px)
+  #greenwashQuiz.greenwash-quiz
+    padding: 60px 14px
+
+    .quiz-shell
+      width: 100%
+
+    .quiz-result-grid
+      grid-template-columns: 1fr
+      gap: 22px
+
+    .quiz-certificate-wrap
+      width: 100%
+      max-width: 430px
+      margin: 0 auto
+      padding: 10px
+
+      canvas
+        width: 100%
+        height: auto
+        display: block
+
+    .quiz-result-copy
+      width: 100%
+      padding: 22px
+      margin: 0 auto
+
+    #greenwashRoleName
+      font-size: 34px
+      line-height: 1.2
+
+    #greenwashScoreText
+      font-size: 20px
+      line-height: 1.5
+
+    #greenwashRoleDesc
+      font-size: 16px
+      line-height: 1.7
+
+    .quiz-role-tags
+      gap: 8px
+
+      span
+        font-size: 13px
+        padding: 5px 8px
+
+    .quiz-advice-box
+      padding: 14px
+
+      h4
+        font-size: 19px
+
+      p
+        font-size: 15px
+
+    .quiz-question-actions
+      flex-direction: column
+
+    .quiz-main-btn,
+    .quiz-sub-btn
+      width: 100%
+
+    .quiz-question-page,
+    .quiz-result-page
+      padding: 18px
+
+    .quiz-question-card
+      padding: 20px
+
+    #greenwashQuestionText
+      font-size: 23px
+
+    .quiz-pixel-person
+      animation: none
+
+#breadcrumbNav.breadcrumb-nav
+  position: fixed
+  top: 18px
+  left: 18px
+  z-index: 9999
+  color: #10251f
+  font-family: "Cubic11", "VT323", "Courier New", monospace
+  pointer-events: none
+
+  *
+    font-family: "Cubic11", "VT323", "Courier New", monospace
+
+  .breadcrumb-inner
+    pointer-events: auto
+    display: flex
+    align-items: flex-start
+    gap: 10px
+
+  .breadcrumb-toggle
+    display: flex
+    align-items: center
+    gap: 8px
+    background: #fff8dc
+    color: #10251f
+    border: 4px solid #10251f
+    box-shadow: 5px 5px 0 #10251f
+    padding: 8px 12px
+    font-weight: 900
+    cursor: pointer
+    line-height: 1
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease
+
+    &:hover
+      background: #7cce56
+      transform: translateY(-2px)
+      box-shadow: 6px 6px 0 #10251f
+
+    &:active
+      transform: translateY(1px)
+      box-shadow: 3px 3px 0 #10251f
+
+    span:first-child
+      color: #00aaa2
+      font-size: 18px
+
+    .page-now
+      max-width: 160px
+      white-space: nowrap
+      overflow: hidden
+      text-overflow: ellipsis
+      font-size: 14px
+
+  .breadcrumb-list
+    list-style: none
+    margin: 0
+    padding: 8px
+    display: flex
+    flex-wrap: wrap
+    gap: 8px
+    max-width: min(900px, calc(100vw - 220px))
+    background: rgba(255, 248, 220, 0.94)
+    border: 4px solid #10251f
+    box-shadow: 6px 6px 0 #10251f
+    opacity: 1
+    transform: translateY(0)
+    transition: opacity 0.2s ease, transform 0.2s ease
+    position: relative
+
+    &::after
+      content: ""
+      position: absolute
+      top: -4px
+      right: -4px
+      width: 38px
+      height: 38px
+      pointer-events: none
+      background: linear-gradient(#10251f, #10251f) 0 0 / 26px 4px no-repeat, linear-gradient(#10251f, #10251f) 26px 4px / 4px 4px no-repeat, linear-gradient(#10251f, #10251f) 30px 8px / 4px 4px no-repeat, linear-gradient(#10251f, #10251f) 34px 12px / 4px 24px no-repeat
+
+  .breadcrumb-item
+    display: flex
+    align-items: center
+    gap: 8px
+
+    button
+      appearance: none
+      border: 3px solid #10251f
+      background: #ffffff
+      color: #10251f
+      padding: 6px 9px
+      font-weight: 900
+      font-size: 13px
+      cursor: pointer
+      box-shadow: 3px 3px 0 #10251f
+      transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease
+
+      &:hover
+        background: #00aaa2
+        color: #ffffff
+        transform: translateY(-2px)
+
+      &:active
+        transform: translateY(1px)
+        box-shadow: 2px 2px 0 #10251f
+
+    &.is-active
+      button
+        background: #10251f
+        color: #00ff7f
+
+  &.is-collapsed
+    .breadcrumb-list
+      opacity: 0
+      transform: translateY(-8px)
+      pointer-events: none
+
+  &.is-hidden
+    opacity: 0
+    transform: translateY(-12px)
+    pointer-events: none
+
+@media screen and (max-width: 1100px)
+  #breadcrumbNav.breadcrumb-nav
+    top: 12px
+    left: 12px
+    right: 12px
+
+    .breadcrumb-inner
+      flex-direction: column
+      gap: 8px
+
+    .breadcrumb-toggle
+      width: fit-content
+      max-width: 100%
+
+      .page-now
+        max-width: calc(100vw - 110px)
+
+    .breadcrumb-list
+      max-width: 100%
+      width: 100%
+      max-height: none
+      overflow: visible
+      display: grid
+      grid-template-columns: 1fr 1fr
+      gap: 8px
+
+    .breadcrumb-item
+      width: 100%
+
+      &:not(:last-child)::after
+        display: none
+
+      button
+        width: 100%
+        text-align: left
+        font-size: 12px
+
+@media screen and (max-width: 520px)
+  #breadcrumbNav.breadcrumb-nav
+    .breadcrumb-list
+      grid-template-columns: 1fr
+      max-height: 220px
+      overflow-y: auto
+
+    .breadcrumb-toggle
+      font-size: 13px
+      padding: 7px 10px
